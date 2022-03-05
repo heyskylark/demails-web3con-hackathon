@@ -81,15 +81,23 @@ function useProvideOrbitDb() {
     return cleanup();
   }, [provider.signer]);
 
-  async function createDocumentStore(dbName) {
-    if (orbitDb) {
-      return await orbitDb.docs(dbName);
+  async function fetchOrInitInbox() {
+    if (provider.signer && orbitDb) {
+      // TODO: smart contract to check if for existing wallet
+      // orbitDb.open("<addr-from-smrt-ctrt>")
+      //   .then((inboxDb) => { inboxDb.load() ... <other logic>})
+      //   .catch((err) => {/** Some problem occured, I think this will happen if no DB is found, create-db */})
+      const address = await provider.signer.getAddress();
+      const userInbox = await orbitDb.docs(address);
+      // TODO: update smart contract with OrbitDb database address: userInbox.address.toString()
+
+      return userInbox;
     } else {
-      console.log("OrbitDb is not initialized");
+      console.log("User's wallet is not connected");
     }
   }
 
   return {
-    createDocumentStore,
+    fetchOrInitInbox,
   };
 }
