@@ -1,3 +1,8 @@
+# Setup
+Currently I am using Node V17 for this project.
+- `npm install`
+- `npm start`
+
 # Advanced Sample Hardhat Project
 
 This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
