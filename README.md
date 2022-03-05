@@ -1,5 +1,5 @@
 # Setup
-Currently I am using Node v16 for this project. Node v17 is not compatible with hardhat at this time.
+Currently I am using Node v16 for this project. Node v17 is **not** compatible with hardhat at this time.
 - `npm install`
 - `npm start`
 
