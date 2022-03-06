@@ -41,7 +41,7 @@ const ipfsOptions = {
 function useProvideOrbitDb() {
   const provider = useEthersProvider();
   // TODO: Move this to dotenv file
-  const mailboxContractAddr = "0x8b97C01F447537d9403Eb7eA9395f63a0f59361D";
+  const mailboxContractAddr = "0xd8E9630b0a20aC52c081c4DC870ABF6B0Cfb7f9f";
   const contractABI = abi;
 
   const [ipfs, setIpfs] = useState(null);
@@ -105,7 +105,7 @@ function useProvideOrbitDb() {
 
   async function fetchInbox(walletAddr, isUsersInbox) {
     if (provider.signer && orbitDb) {
-      mailboxContract.getInbox().then((inboxAddr) => {
+      mailboxContract.getInbox(walletAddr).then((inboxAddr) => {
         if (inboxAddr !== "<empty string>" && inboxAddr.length !== 0) {
           orbitDb
             .open(inboxAddr)
@@ -187,10 +187,11 @@ function useProvideOrbitDb() {
       const toEmails = email.to;
       for (let emailIndex = 0; emailIndex < toEmails.length; emailIndex++) {
         const toAddr = toEmails[emailIndex];
-        const recievingInboxAddr = (await mailboxContract.getInbox()) || pendingMailbox;
+        const receivingInboxAddr =
+          (await mailboxContract.getInbox(toAddr)) || pendingMailbox;
 
         orbitDb
-          .open(recievingInboxAddr)
+          .open(receivingInboxAddr)
           .then((receivingInbox) => {
             receivingInbox.put(email);
             receivingInbox.close();
