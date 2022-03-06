@@ -1,7 +1,7 @@
-import { useEthersProvider } from '../context/providerContext.js';
-import { useOrbitDb } from '../context/orbitDbContext';
-import { Button } from 'antd';
-import React from 'react';
+import { useEthersProvider } from "../context/providerContext.js";
+import { useOrbitDb } from "../context/orbitDbContext";
+import { Button } from "antd";
+import React from "react";
 
 function Login() {
   const provider = useEthersProvider();
@@ -26,19 +26,13 @@ function Login() {
       if (isValidSignature) {
         console.log(window);
         // eslint-disable-next-line
-        sessionStorage.setItem('lastSessionSignedIn', true);
+        sessionStorage.setItem("lastSessionSignedIn", true);
       }
     }
   }, [provider]);
 
-  function initInboxButton() {
-    if (!orbitDb.inbox) {
-      return <button onClick={orbitDb.initInbox}>Init Inbox</button>;
-    }
-  }
-
   function connectedComponent() {
-    const inboxAddr = orbitDb.inbox ? orbitDb.inbox.address.toString() : 'None';
+    const inboxAddr = orbitDb.inbox ? orbitDb.inbox.address.toString() : "None";
     return (
       <div>
         <p>Wallet Address: {provider.addr}</p>

@@ -1,10 +1,10 @@
-import Login from '../../pages/Login';
-import OpenRouteTemplate from './OpenRouteTemplate';
+import Login from "../../pages/Login";
+import OpenRouteTemplate from "./OpenRouteTemplate";
 const OpenRoutes = {
   element: <OpenRouteTemplate />,
   children: [
     {
-      path: '/',
+      path: "/",
       element: <Login />
     }
   ]

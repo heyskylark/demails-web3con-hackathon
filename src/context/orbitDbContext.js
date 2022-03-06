@@ -1,12 +1,12 @@
-import * as MailboxJson from '../utils/Mailbox.json';
-import { useState, useEffect, useContext, createContext } from 'react';
-import { useEthersProvider } from './providerContext.js';
-import Identities from 'orbit-db-identity-provider';
-import PropTypes from 'prop-types';
+import * as MailboxJson from "../utils/Mailbox.json";
+import { useState, useEffect, useContext, createContext } from "react";
+import { useEthersProvider } from "./providerContext.js";
+import Identities from "orbit-db-identity-provider";
+import PropTypes from "prop-types";
 
 const { abi } = MailboxJson;
-const IPFS = require('ipfs-http-client');
-const OrbitDB = require('orbit-db');
+const IPFS = require("ipfs-http-client");
+const OrbitDB = require("orbit-db");
 
 const orbitDbContext = createContext();
 
@@ -41,7 +41,7 @@ const ipfsOptions = {
 function useProvideOrbitDb() {
   const provider = useEthersProvider();
   // TODO: Move this to dotenv file
-  const mailboxContractAddr = '0x8b97C01F447537d9403Eb7eA9395f63a0f59361D';
+  const mailboxContractAddr = "0x8b97C01F447537d9403Eb7eA9395f63a0f59361D";
   const contractABI = abi;
 
   const [ipfs, setIpfs] = useState(null);
@@ -54,7 +54,7 @@ function useProvideOrbitDb() {
     function cleanup() {
       if (orbitDb) {
         orbitDb.stop().then(() => {
-          console.log('-> Disconnected from OrbitDb');
+          console.log("-> Disconnected from OrbitDb");
           setOrbitDb(null);
         });
       }
@@ -69,20 +69,20 @@ function useProvideOrbitDb() {
         tempIpfs = IPFS.create(ipfsOptions);
         setIpfs(tempIpfs);
       }
-      console.log('-> IPFS node connected');
+      console.log("-> IPFS node connected");
 
       Identities.createIdentity({
-        type: 'ethereum',
+        type: "ethereum",
         signer
       })
         .then((identity) => {
           OrbitDB.createInstance(tempIpfs, { identity: identity }).then((orbit) => {
             setOrbitDb(orbit);
-            console.log('-> OrbitDb instance created');
+            console.log("-> OrbitDb instance created");
           });
         })
         .catch((err) => {
-          console.log('There was a problem getting the OrbitDb identity', err);
+          console.log("There was a problem getting the OrbitDb identity", err);
         });
 
       const contract = provider.connectToContract(mailboxContractAddr, contractABI);
@@ -106,7 +106,7 @@ function useProvideOrbitDb() {
   async function fetchInbox(walletAddr, isUsersInbox) {
     if (provider.signer && orbitDb) {
       mailboxContract.getInbox().then((inboxAddr) => {
-        if (inboxAddr !== '<empty string>' && inboxAddr.length !== 0) {
+        if (inboxAddr !== "<empty string>" && inboxAddr.length !== 0) {
           orbitDb
             .open(inboxAddr)
             .then((inboxDb) => {
@@ -117,7 +117,7 @@ function useProvideOrbitDb() {
               }
             })
             .catch((err) => {
-              console.log('Inbox could not be found for this user', err);
+              console.log("Inbox could not be found for this user", err);
             });
         }
       });
@@ -130,7 +130,7 @@ function useProvideOrbitDb() {
   async function initInbox() {
     if (provider.signer) {
       if (inbox) {
-        console.log('User already has an inbox');
+        console.log("User already has an inbox");
         return;
       }
 
@@ -147,7 +147,7 @@ function useProvideOrbitDb() {
         })
         .catch((err) => {
           userInbox.drop();
-          console.log('There was a problem initializing the inbox', err);
+          console.log("There was a problem initializing the inbox", err);
         });
     } else {
       console.log("User's wallet is not connected");
@@ -171,13 +171,13 @@ function useProvideOrbitDb() {
     // User needs an init inbox before sending emails
     if (provider.signer) {
       if (!inbox) {
-        console.log('User must have an inbox before sending emails');
+        console.log("User must have an inbox before sending emails");
         return;
       }
 
       const [signature, message, senderAddress] = await provider.requestPersonalSign();
       if (senderAddress !== email.from) {
-        console.log('You cannot send an email as another person');
+        console.log("You cannot send an email as another person");
         return;
       }
 
@@ -196,7 +196,7 @@ function useProvideOrbitDb() {
             receivingInbox.close();
           })
           .catch((err) => {
-            console.log('Inbox not found, email not sent for' + toAddr, err);
+            console.log("Inbox not found, email not sent for" + toAddr, err);
           });
       }
     } else {
