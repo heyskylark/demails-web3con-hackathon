@@ -132,6 +132,16 @@ function useProvideOrbitDb() {
         return;
       }
 
+      const [signature, message, senderAddress] =
+        await provider.requestPersonalSign();
+      if (senderAddress !== email.from) {
+        console.log("You cannot send an email as another person");
+        return;
+      }
+
+      email.signedMessage = signature;
+      email.originalMessage = message;
+
       const toEmails = email.to;
       for (let emailIndex = 0; emailIndex < toEmails.length; emailIndex++) {
         // TODO: Fetch orbitDb inbox address from smart contract toEmails[emailIndex]
