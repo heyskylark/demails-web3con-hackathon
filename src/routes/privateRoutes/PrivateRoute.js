@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 
 // project imports
 import MainLayout from '../../layout/MainLayout';
-import { Home } from '../../components';
+import { Home, Email } from '../../components';
 // import Loadable from "../../common/Loadable";
 
 // dashboard routing
@@ -19,8 +19,12 @@ const MainRoutes = {
       element: <Navigate to="/logged-in/inbox" />
     },
     {
-      path: '/logged-in/:id',
+      path: '/logged-in/:tab',
       element: <Home />
+    },
+    {
+      path: '/logged-in/:tab/:id',
+      element: <Email />
     }
   ]
 };

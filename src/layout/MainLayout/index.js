@@ -1,10 +1,10 @@
-import React from "react";
-import { Helmet } from "react-helmet";
-import ReactDOM from "react-dom";
-import { useNavigate, Outlet, useParams } from "react-router-dom";
-import Signin from "../../pages/Login";
-import "antd/dist/antd.css";
-import { Layout, Menu, Typography, PageHeader, Button } from "antd";
+import React from 'react';
+import { Helmet } from 'react-helmet';
+import ReactDOM from 'react-dom';
+import { useNavigate, Outlet, useParams } from 'react-router-dom';
+import Signin from '../../pages/Login';
+import 'antd/dist/antd.css';
+import { Layout, Menu, Typography, PageHeader, Button } from 'antd';
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -13,26 +13,26 @@ import {
   EditOutlined,
   StarOutlined,
   DeleteOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
-import MessageBox from "../message-box/message-box.component";
+  PlusOutlined
+} from '@ant-design/icons';
+import MessageBox from '../message-box/message-box.component';
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
 
 function getParams(location) {
   const searchParams = new URLSearchParams(location.search);
   return {
-    query: searchParams.get("compose") || "",
+    query: searchParams.get('compose') || ''
   };
 }
 
 function setParams({ query }) {
   const searchParams = new URLSearchParams();
-  searchParams.set("compose", query || "");
+  searchParams.set('compose', query || '');
   return searchParams.toString();
 }
 const SiderDemo = () => {
-  let { id } = useParams();
+  let { tab } = useParams();
   const [messageBox, showMessageBox] = React.useState(true);
 
   const [collapsed, setCollapsed] = React.useState(false);
@@ -59,7 +59,7 @@ const SiderDemo = () => {
 
   React.useEffect(() => {
     const params = getParams(window.location);
-    if (params.query === "true") {
+    if (params.query === 'true') {
       showMessageBox(false);
     } else {
       !messageBox && showMessageBox(true);
@@ -67,26 +67,26 @@ const SiderDemo = () => {
   }, [window.location.search]);
 
   const toggle = React.useCallback(() => {
-    setCollapsed(prev => !prev);
+    setCollapsed((prev) => !prev);
   }, []);
 
-  const onClick = React.useCallback(e => {
-    console.log(id, e);
-    navigate("/logged-in/" + e.key);
+  const onClick = React.useCallback((e) => {
+    console.log(tab, e);
+    navigate('/logged-in/' + e.key);
   }, []);
 
   const handleComposerDialog = React.useCallback(() => {
-    console.log("sdffr");
+    console.log('sdffr');
     const url = setParams({ query: true });
-    console.log("sdffr", url);
+    console.log('sdffr', url);
     navigate(`${window.location.pathname}?${url}`);
   }, []);
 
   return (
-    <Layout style={{ width: "100vw", height: "100vh", overflow: "hidden" }}>
+    <Layout style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
       <Helmet>
         <title>Inbox | emailDAO</title>
-      </Helmet>{" "}
+      </Helmet>{' '}
       <MessageBox
         showMessage={messageBox}
         shouldMessageShow={showMessageBox}
@@ -97,15 +97,16 @@ const SiderDemo = () => {
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo" />
         <PageHeader className="site-page-header" title="Messages" />
-        <Menu onClick={onClick} mode="inline" selectedKeys={id}>
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }} className="">
+        <Menu onClick={onClick} mode="inline" selectedKeys={tab}>
+          <div
+            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            className="">
             <Button
-              shape={collapsed ? "circle" : "rectangle"}
+              shape={collapsed ? 'circle' : 'rectangle'}
               onClick={handleComposerDialog}
-              style={{ margin: "0 0 0.5rem 0.25rem" }}
-              icon={<PlusOutlined />}
-            >
-              {collapsed ? "" : "Compose"}
+              style={{ margin: '0 0 0.5rem 0.25rem' }}
+              icon={<PlusOutlined />}>
+              {collapsed ? '' : 'Compose'}
             </Button>
           </div>
           <Menu.Item key="inbox" icon={<InboxOutlined />}>
@@ -128,12 +129,16 @@ const SiderDemo = () => {
       <Layout className="site-layout">
         <Header
           className="site-layout-background"
-          style={{ padding: 0, display: "flex", justifyContent: "space-between", alignItems: "center" }}
-        >
+          style={{
+            padding: 0,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
           {collapsed ? (
-            <MenuUnfoldOutlined style={{ fontSize: "1.2rem" }} onClick={toggle} />
+            <MenuUnfoldOutlined style={{ fontSize: '1.2rem' }} onClick={toggle} />
           ) : (
-            <MenuFoldOutlined style={{ fontSize: "1.2rem" }} onClick={toggle} />
+            <MenuFoldOutlined style={{ fontSize: '1.2rem' }} onClick={toggle} />
           )}
           <Signin />
         </Header>
@@ -141,11 +146,10 @@ const SiderDemo = () => {
           className="site-layout-background"
           style={{
             padding: 24,
-            height: "calc(100vh - 64px)",
-            width: collapsed ? "calc(100vw - 80px)" : "calc(100vw - 200px)",
-            overflow: "auto",
-          }}
-        >
+            height: 'calc(100vh - 64px)',
+            width: collapsed ? 'calc(100vw - 80px)' : 'calc(100vw - 200px)',
+            overflow: 'auto'
+          }}>
           <Outlet />
         </Content>
       </Layout>
