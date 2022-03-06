@@ -11,6 +11,10 @@ function Login() {
     return <Button onClick={provider.connectWallet}>Press to connect!</Button>;
   }
 
+  function requestForPolygonComponent(){
+    return <Button onClick={orbitDb.initInbox}>Please Switch to Polygon</Button>;
+  }
+
   function initInboxButton() {
     if (!orbitDb.inbox) {
       return <Button onClick={orbitDb.initInbox}>Init Inbox</Button>;
@@ -45,7 +49,15 @@ function Login() {
 
   function renderLogin() {
     if (provider.signer) {
-      return connectedComponent();
+
+      if(provider.isMetamaskOnPolygon()){
+        console.log('on Polygon')
+        return connectedComponent();
+      }else{
+        console.log('Not on Polygon')
+        return requestForPolygonComponent();
+      }
+      
     } else {
       return walletConnectComponent();
     }
