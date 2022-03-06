@@ -70,8 +70,9 @@ function useProvideEthersProvider() {
       if (addr) {
         console.log("Requesting personal signature");
         const message =
-          "Same message with a date at the end <epoch-date-in-milliseconds>";
-        res = window.ethereum
+          "This message will be used to validate you are the email sender! " +
+          Date.now();
+        window.ethereum
           .request({
             method: "personal_sign",
             params: [message, addr],
