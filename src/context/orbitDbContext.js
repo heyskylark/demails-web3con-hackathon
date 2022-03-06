@@ -156,6 +156,10 @@ function useProvideOrbitDb() {
     }
   }
 
+  // TODO: inbox orbitDb query after first connecting/loading
+  // TODO: events to accept new emails
+  // TODO: filtering spoofed emails when inbox is query when first connected and also when new emails come in through events
+
   return {
     fetchInbox,
     initInbox,
