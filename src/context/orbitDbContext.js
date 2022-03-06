@@ -31,8 +31,8 @@ const ipfsOptions = {
       active: true,
     },
   },
-  host: "127.0.0.1",
-  port: "5001",
+  host: process.env.REACT_APP_IPFS_HOST,
+  port: process.env.REACT_APP_IPFS_PORT,
 };
 
 function useProvideOrbitDb() {
@@ -107,7 +107,7 @@ function useProvideOrbitDb() {
 
   async function fetchInbox(walletAddr, isUsersInbox) {
     if (provider.signer && orbitDb) {
-      mailboxContract.getInbox(walletAddr).then((inboxAddr) => {
+      mailboxContract.getInbox().then((inboxAddr) => {
         if (inboxAddr !== "<empty string>" && inboxAddr.length !== 0) {
           orbitDb
             .open(inboxAddr)
@@ -191,7 +191,7 @@ function useProvideOrbitDb() {
       for (let emailIndex = 0; emailIndex < toEmails.length; emailIndex++) {
         const toAddr = toEmails[emailIndex];
         const recievingInboxAddr =
-          (await mailboxContract.getInbox(toAddr)) || pendingMailbox;
+          (await mailboxContract.getInbox()) || pendingMailbox;
 
         orbitDb
           .open(recievingInboxAddr)
