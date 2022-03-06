@@ -1,6 +1,5 @@
 import { useEffect, useState, useContext, createContext } from "react";
 import { ethers } from "ethers";
-import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const ethersProviderContext = createContext();
@@ -40,7 +39,10 @@ function useProvideEthersProvider() {
             });
           }
         }
-      });
+      })
+      .catch((err) => {
+        console.log("WTF", err);
+      })
     }
   }, []);
 

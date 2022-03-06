@@ -34,8 +34,8 @@ const ipfsOptions = {
       active: true
     }
   },
-  host: process.env.REACT_APP_IPFS_HOST,
-  port: process.env.REACT_APP_IPFS_PORT
+  host: "localhost",
+  port: 5001
 };
 
 function useProvideOrbitDb() {
