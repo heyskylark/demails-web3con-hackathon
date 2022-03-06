@@ -8,6 +8,9 @@ const { abi } = MailboxJson;
 const IPFS = require("ipfs-http-client");
 const OrbitDB = require("orbit-db");
 
+import Gun from 'gun/gun';
+
+
 const orbitDbContext = createContext();
 
 export function ProvideOrbitDb({ children }) {
@@ -98,6 +101,24 @@ function useProvideOrbitDb() {
   }, [provider.signer]);
 
   useEffect(() => {
+    async function setupDatabase() {
+      const gun = Gun({
+        peers: ["https://gun-manhattan.herokuapp.com/gun"], // Put the relay node that you want here
+      });
+      // let gun = Gun("https://gun-manhattan.herokuapp.com/gun");
+      let emails = gun.get("0x1bd506aED4e48609A63371c5e2571747A249B1b2").get("public").get("emails");
+      emails.get("ID3").put({
+        id: 2,
+        body: "Hello as",
+        date: 456465465465
+      });
+      emails.on(data => {
+        
+        console.log(data);
+      });
+      return " ";
+    }
+    setupDatabase();
     if (provider.addr && provider.signer && orbitDb) {
       fetchInbox(provider.addr, true);
     }
