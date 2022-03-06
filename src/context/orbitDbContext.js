@@ -1,4 +1,4 @@
-import * as MailboxJson from "../artifacts/Mailbox.json";
+import * as MailboxJson from "../utils/Mailbox.json";
 import { useState, useEffect, useContext, createContext } from "react";
 import { useEthersProvider } from "./providerContext.js";
 import Identities from "orbit-db-identity-provider";
