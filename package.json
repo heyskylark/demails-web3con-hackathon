@@ -12,6 +12,8 @@
     "ethereumjs-util": "^7.1.4",
     "ipfs-http-client": "^56.0.1",
     "orbit-db": "^0.28.3",
+    "orbit-db-identity-provider": "^0.4.0",
+    "os": "^0.1.2",
     "path-browserify": "^1.0.1",
     "react": "^17.0.2",
     "react-app-rewired": "^2.2.1",
