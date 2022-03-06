@@ -17,12 +17,13 @@ contract Mailbox is Context, Ownable {
       _totalInboxes = 0;
   }
 
-  function getInbox() external view returns (string memory) {
-      return _mailboxes[_msgSender()];
+  function getInbox(address addr) external view returns (string memory) {
+      return _mailboxes[addr];
   }
 
   function addInbox(string memory mailboxStorage) external {
-     
+      require(bytes(_mailboxes[_msgSender()]).length == 0, "Mailbox already exists");
+
       _mailboxes[_msgSender()] = mailboxStorage;
       _totalInboxes += 1;
 
