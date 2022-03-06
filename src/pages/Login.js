@@ -16,6 +16,24 @@ function Login() {
       return <Button onClick={orbitDb.initInbox}>Init Inbox</Button>;
     }
   }
+
+  function sendEmailButtonClick() {
+    const recieverAddr = "0x24b9a28CCfa9F4c1f3B8758155dEF332f85026de";
+    const email = {
+      to: [recieverAddr],
+      subject: "This is a test email",
+      body: "Hello, I am sending a test email. Love Skylark"
+    }
+
+    orbitDb.sendEmail(email)
+  }
+
+  function testSendEmail() {
+    if (orbitDb.inbox) {
+      return <Button onClick={sendEmailButtonClick}>Test sending email</Button>;
+    }
+  }
+
   const handleRequestPersonalSign = React.useCallback(async () => {
     const res = await provider.requestPersonalSign();
     console.log(res);
@@ -39,6 +57,7 @@ function Login() {
         <p>Mailbox OrbitDb Address: {inboxAddr}</p>
         <Button onClick={provider.requestPersonalSign}>Request personal_sign</Button>
         {initInboxButton()}
+        {testSendEmail()}
       </div>
     );
   }

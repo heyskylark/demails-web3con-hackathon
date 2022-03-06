@@ -41,7 +41,7 @@ const ipfsOptions = {
 function useProvideOrbitDb() {
   const provider = useEthersProvider();
   // TODO: Move this to dotenv file
-  const mailboxContractAddr = "0xd8E9630b0a20aC52c081c4DC870ABF6B0Cfb7f9f";
+  const mailboxContractAddr = "0xcAac6E79b814c46A019A29784840A187DECc2478";
   const contractABI = abi;
 
   const [ipfs, setIpfs] = useState(null);
@@ -113,6 +113,7 @@ function useProvideOrbitDb() {
               inboxDb.load();
 
               if (isUsersInbox) {
+                setupInboxEvents(inboxDb);
                 setInbox(inboxDb);
               }
             })
@@ -135,13 +136,18 @@ function useProvideOrbitDb() {
       }
 
       const address = await provider.signer.getAddress();
-      const userInbox = await orbitDb.docs(address);
+      const userInbox = await orbitDb.create(address, "docstore", {
+        accessController: {
+          write: ["*"]
+        }
+      });
       const inboxAddr = userInbox.address.toString();
       // TODO: Set AccessControl to [*] or else nobody will be able to send to inbox
       mailboxContract
         .addInbox(inboxAddr)
         .then(() => {
           setInbox(userInbox);
+          setupInboxEvents(userInbox);
           // TODO: move pending emails from pending email DB to new DB
           return userInbox;
         })
@@ -158,13 +164,13 @@ function useProvideOrbitDb() {
   * Need to figure out email body. Is it possible to have types to adhear to in regular JS like TypeScript?
   {
     _id: <hash of all the fields below> (Warning: ID field must be _id as that's what OrbitDb defaults to for id field)
-    from: <wallet address>
+    from: <wallet address> *** this can be added in this function below ***
     to: list(<wallet address>)
     signedMessage: <message signed by personal_sign> *** this can be added in this function below ***
     originalMessage: <message before it was signed by personal_sign> *** this can be added in this function below ***
     subject: <subject string>
     body: <body string>
-    createdAt: Date.now()
+    createdAt: Date.now() <message before it was signed by personal_sign> *** this can be added in this function below ***
   }
   */
   async function sendEmail(email) {
@@ -176,33 +182,72 @@ function useProvideOrbitDb() {
       }
 
       const [signature, message, senderAddress] = await provider.requestPersonalSign();
-      if (senderAddress !== email.from) {
-        console.log("You cannot send an email as another person");
-        return;
-      }
 
+      email.from = senderAddress
       email.signedMessage = signature;
       email.originalMessage = message;
+      email.createdAt = Date.now();
 
       const toEmails = email.to;
       for (let emailIndex = 0; emailIndex < toEmails.length; emailIndex++) {
         const toAddr = toEmails[emailIndex];
         const receivingInboxAddr =
           (await mailboxContract.getInbox(toAddr)) || pendingMailbox;
+        
+        if (!receivingInboxAddr) {
+          console.log("Could not find inbox to send to");
+          return;
+        } else {
+          console.log("Sending to inbox", receivingInboxAddr);
+        }
 
+        email._id = email.from + "." + toAddr + "." + email.createdAt;
         orbitDb
           .open(receivingInboxAddr)
           .then((receivingInbox) => {
+            console.log("Rec inbox", receivingInbox);
             receivingInbox.put(email);
             receivingInbox.close();
           })
           .catch((err) => {
-            console.log("Inbox not found, email not sent for" + toAddr, err);
+            console.log("Inbox not found, email not sent for " + toAddr, err);
           });
       }
     } else {
       console.log("User's wallet must be connected to send email.");
     }
+  }
+
+  function setupInboxEvents(db) {
+    db.events.on('replicated', (address) => {
+      console.log("Synced with another peer, addres", address);
+    });
+    
+    db.events.on('replicate', (address) => {
+      console.log("replicating with peer", address);
+    });
+
+    db.events.on('replicate.progress', (address, hash, entry, progress, have) => {
+      console.log("Replication progress")
+      console.log("address", address);
+      console.log("hash", hash);
+      console.log("entry", entry);
+      console.log("progress", progress);
+      console.log("dp peices we have", have);
+    });
+
+    db.events.on('ready', (dbname, heads) => {
+      console.log("Db fully loaded and ready", dbname);
+      console.log("heads", heads);
+    });
+
+    db.events.on('peer', (peer) => {
+      console.log("new peer connected", peer);
+    });
+
+    db.events.on('closed', (dbname) => {
+      console.log("db closed", dbname);
+    });
   }
 
   // TODO: inbox orbitDb query after first connecting/loading

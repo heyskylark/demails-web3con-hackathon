@@ -72,24 +72,25 @@ function useProvideEthersProvider() {
         console.log("Requesting personal signature");
         const message =
           "This message will be used to validate you are the email sender! " + Date.now();
-        window.ethereum
-          .request({
-            method: "personal_sign",
-            params: [message, addr]
-          })
-          .then((signature) => {
-            console.log("Original address:", addr);
-            console.log("Signed message:", signature);
-            console.log(
-              "Original address is proven to be the actual sender:",
-              validatePersonalSign(addr, signature, message)
-            );
 
-            return [signature, message, addr];
-          })
-          .catch((err) => {
-            console.log("There was a problem retrieving the personal_sign", err);
-          });
+        try {
+          const signature = await window.ethereum
+            .request({
+              method: "personal_sign",
+              params: [message, addr]
+            })
+
+          console.log("Original address:", addr);
+          console.log("Signed message:", signature);
+          console.log(
+            "Original address is proven to be the actual sender:",
+            validatePersonalSign(addr, signature, message)
+          );
+
+          return [signature, message, addr];
+        } catch (err) {
+          console.log("There was a problem retrieving the personal_sign", err);
+        }
         return res;
       } else {
         console.log("Cannot request personal_sign without a connected wallet");
