@@ -263,6 +263,6 @@ function useProvideOrbitDb() {
     inbox,
     fetchInbox,
     initInbox,
-    sendEmail
+    sendEmail,
   };
 }

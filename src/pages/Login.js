@@ -30,7 +30,11 @@ function Login() {
 
   function testSendEmail() {
     if (orbitDb.inbox) {
-      return <Button onClick={sendEmailButtonClick}>Test sending email</Button>;
+      return (
+        <>
+          <Button onClick={sendEmailButtonClick}>Test sending email</Button>
+        </>
+      );
     }
   }
 

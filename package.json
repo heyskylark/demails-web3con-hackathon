@@ -10,6 +10,7 @@
     "antd": "^4.18.9",
     "assert": "^2.0.0",
     "crypto-browserify": "^3.12.0",
+    "dids": "^2.4.3",
     "ethereumjs-util": "^7.1.4",
     "ipfs-http-client": "^56.0.1",
     "orbit-db": "^0.28.3",
