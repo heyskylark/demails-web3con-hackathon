@@ -1,17 +1,16 @@
-import { useEffect, useState, useContext, createContext } from "react";
-import { ethers } from "ethers";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState, useContext, createContext } from 'react';
+import { ethers } from 'ethers';
+import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const ethersProviderContext = createContext();
 
 export function ProvideEthersProvider({ children }) {
   const auth = useProvideEthersProvider();
-  return (
-    <ethersProviderContext.Provider value={auth}>
-      {children}
-    </ethersProviderContext.Provider>
-  );
+  return <ethersProviderContext.Provider value={auth}>{children}</ethersProviderContext.Provider>;
 }
+
+ProvideEthersProvider.propTypes = { children: PropTypes.node };
 
 export const useEthersProvider = () => {
   return useContext(ethersProviderContext);
@@ -48,7 +47,7 @@ function useProvideEthersProvider() {
   async function connectWallet() {
     if (provider && !signer) {
       provider
-        .send("eth_requestAccounts", [])
+        .send('eth_requestAccounts', [])
         .then(() => {
           const sign = provider.getSigner();
           setSigner(sign);
@@ -57,10 +56,10 @@ function useProvideEthersProvider() {
           });
         })
         .catch((err) => {
-          console.log("There was a problem connecting the wallet", err);
+          console.log('There was a problem connecting the wallet', err);
         });
     } else {
-      console.log("Cannot connect wallet, already connected");
+      console.log('Cannot connect wallet, already connected');
     }
   }
 
@@ -68,45 +67,38 @@ function useProvideEthersProvider() {
     let res;
     if (provider) {
       if (addr) {
-        console.log("Requesting personal signature");
+        console.log('Requesting personal signature');
         const message =
-          "This message will be used to validate you are the email sender! " +
-          Date.now();
+          'This message will be used to validate you are the email sender! ' + Date.now();
         window.ethereum
           .request({
-            method: "personal_sign",
-            params: [message, addr],
+            method: 'personal_sign',
+            params: [message, addr]
           })
           .then((signature) => {
-            console.log("Original address:", addr);
-            console.log("Signed message:", signature);
+            console.log('Original address:', addr);
+            console.log('Signed message:', signature);
             console.log(
-              "Original address is proven to be the actual sender:",
+              'Original address is proven to be the actual sender:',
               validatePersonalSign(addr, signature, message)
             );
 
             return [signature, message, addr];
           })
           .catch((err) => {
-            console.log(
-              "There was a problem retrieving the personal_sign",
-              err
-            );
+            console.log('There was a problem retrieving the personal_sign', err);
           });
         return res;
       } else {
-        console.log("Cannot request personal_sign without a connected wallet");
+        console.log('Cannot request personal_sign without a connected wallet');
       }
     }
   }
 
   function validatePersonalSign(senderAddr, signature, originalMessage) {
-    const recoveredAddr = ethers.utils.verifyMessage(
-      originalMessage,
-      signature
-    );
+    const recoveredAddr = ethers.utils.verifyMessage(originalMessage, signature);
 
-    console.log("Recovered addr using ecrover:", recoveredAddr);
+    console.log('Recovered addr using ecrover:', recoveredAddr);
 
     return recoveredAddr === senderAddr;
   }
@@ -118,7 +110,7 @@ function useProvideEthersProvider() {
 
   function setupConnectEvents() {
     if (provider) {
-      provider.provider.on("accountsChanged", (code) => {
+      provider.provider.on('accountsChanged', (code) => {
         const accountSwitch = code[0];
         if (accountSwitch) {
           const sign = provider.getSigner();
@@ -142,6 +134,6 @@ function useProvideEthersProvider() {
     addr,
     connectWallet,
     requestPersonalSign,
-    connectToContract,
+    connectToContract
   };
 }
