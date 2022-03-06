@@ -71,21 +71,5 @@
     "react-app-env": "^1.2.3",
     "solhint": "^3.3.7",
     "solidity-coverage": "^0.7.20"
-  },
-  "description": "Currently I am using Node V16 for this project. - `npm install` - `npm start`",
-  "main": ".eslintrc.js",
-  "directories": {
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/brandonfeist/decentalized-email.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/brandonfeist/decentalized-email/issues"
-  },
-  "homepage": "https://github.com/brandonfeist/decentalized-email#readme"
+  }
 }
