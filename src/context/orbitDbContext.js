@@ -1,9 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import * as MailboxJson from '../utils/Mailbox.json';
 import { useState, useEffect, useContext, createContext } from 'react';
 import { useEthersProvider } from './providerContext.js';
 import Identities from 'orbit-db-identity-provider';
+import PropTypes from 'prop-types';
 
 const { abi } = MailboxJson;
 const IPFS = require('ipfs-http-client');
@@ -35,8 +34,8 @@ const ipfsOptions = {
       active: true
     }
   },
-  host: 'd7ea-20-124-12-239.ngrok.io',
-  port: '80'
+  host: process.env.REACT_APP_IPFS_HOST,
+  port: process.env.REACT_APP_IPFS_PORT
 };
 
 function useProvideOrbitDb() {
@@ -106,7 +105,7 @@ function useProvideOrbitDb() {
 
   async function fetchInbox(walletAddr, isUsersInbox) {
     if (provider.signer && orbitDb) {
-      mailboxContract.getInbox(walletAddr).then((inboxAddr) => {
+      mailboxContract.getInbox().then((inboxAddr) => {
         if (inboxAddr !== '<empty string>' && inboxAddr.length !== 0) {
           orbitDb
             .open(inboxAddr)
@@ -188,7 +187,7 @@ function useProvideOrbitDb() {
       const toEmails = email.to;
       for (let emailIndex = 0; emailIndex < toEmails.length; emailIndex++) {
         const toAddr = toEmails[emailIndex];
-        const recievingInboxAddr = (await mailboxContract.getInbox(toAddr)) || pendingMailbox;
+        const recievingInboxAddr = (await mailboxContract.getInbox()) || pendingMailbox;
 
         orbitDb
           .open(recievingInboxAddr)

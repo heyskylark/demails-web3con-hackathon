@@ -1,6 +1,7 @@
-import PropTypes from 'prop-types';
 import { useEffect, useState, useContext, createContext } from 'react';
 import { ethers } from 'ethers';
+import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const ethersProviderContext = createContext();
 
@@ -33,7 +34,7 @@ function useProvideEthersProvider() {
         if (accounts.length > 0) {
           const sign = provider.getSigner();
           if (sign) {
-            setSigner(provider.getSigner());
+            setSigner(sign);
             sign.getAddress().then((addr) => {
               setAddr(addr);
             });
@@ -63,8 +64,10 @@ function useProvideEthersProvider() {
   }
 
   async function requestPersonalSign() {
+    let res;
     if (provider) {
       if (addr) {
+        console.log('Requesting personal signature');
         const message =
           'This message will be used to validate you are the email sender! ' + Date.now();
         window.ethereum
@@ -85,6 +88,7 @@ function useProvideEthersProvider() {
           .catch((err) => {
             console.log('There was a problem retrieving the personal_sign', err);
           });
+        return res;
       } else {
         console.log('Cannot request personal_sign without a connected wallet');
       }

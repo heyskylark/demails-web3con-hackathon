@@ -1,6 +1,7 @@
 import { useEthersProvider } from '../context/providerContext.js';
 import { useOrbitDb } from '../context/orbitDbContext';
 import { Button } from 'antd';
+import React from 'react';
 
 function Login() {
   const provider = useEthersProvider();
@@ -13,6 +14,26 @@ function Login() {
   function initInboxButton() {
     if (!orbitDb.inbox) {
       return <Button onClick={orbitDb.initInbox}>Init Inbox</Button>;
+    }
+  }
+  const handleRequestPersonalSign = React.useCallback(async () => {
+    const res = await provider.requestPersonalSign();
+    console.log(res);
+    console.log(window);
+    if (res) {
+      const isValidSignature = await provider.validatePersonalSign(res[2], res[0], res[1]);
+      console.log(isValidSignature);
+      if (isValidSignature) {
+        console.log(window);
+        // eslint-disable-next-line
+        sessionStorage.setItem('lastSessionSignedIn', true);
+      }
+    }
+  }, [provider]);
+
+  function initInboxButton() {
+    if (!orbitDb.inbox) {
+      return <button onClick={orbitDb.initInbox}>Init Inbox</button>;
     }
   }
 
