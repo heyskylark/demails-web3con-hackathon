@@ -13,8 +13,7 @@ contract Mailbox is Context, Ownable {
   event RegisterUser(address sender, string mailboxStorage);
   event UpdatePendingInbox(string prevAddress, string currentAddress, address operator);
   
-  constructor(string memory inboxAddress) {
-      _pendingInbox = inboxAddress;
+  constructor() {
       _totalInboxes = 0;
   }
 
