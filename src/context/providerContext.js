@@ -63,6 +63,11 @@ function useProvideEthersProvider() {
     }
   }
 
+  function isMetamaskOnPolygon() {
+    console.log(window.ethereum.networkVersion === "80001")
+    return window.ethereum.networkVersion === "80001";
+  }
+
   async function requestPersonalSign() {
     let res;
     if (provider) {
@@ -134,6 +139,7 @@ function useProvideEthersProvider() {
     addr,
     connectWallet,
     requestPersonalSign,
-    connectToContract
+    connectToContract,
+    isMetamaskOnPolygon
   };
 }
