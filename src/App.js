@@ -1,5 +1,5 @@
 import "./App.css";
-import { ProvideOrbitDb } from "./context/orbtDbContext";
+import { ProvideOrbitDb } from "./context/orbitDbContext";
 import { ProvideEthersProvider } from "./context/providerContext.js";
 import Login from "./pages/Login.js";
 
