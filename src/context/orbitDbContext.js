@@ -139,6 +139,7 @@ function useProvideOrbitDb() {
       const address = await provider.signer.getAddress();
       const userInbox = await orbitDb.docs(address);
       const inboxAddr = userInbox.address.toString();
+      // TODO: Set AccessControl to [*] or else nobody will be able to send to inbox
       mailboxContract
         .addInbox(inboxAddr)
         .then(() => {
