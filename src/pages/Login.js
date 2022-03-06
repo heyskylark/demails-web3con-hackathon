@@ -1,19 +1,30 @@
 import { useEthersProvider } from "../context/providerContext.js";
+import { useOrbitDb } from "../context/orbitDbContext";
 
 function Login() {
   const provider = useEthersProvider();
+  const orbitDb = useOrbitDb();
 
   function walletConnectComponent() {
     return <button onClick={provider.connectWallet}>Press to connect!</button>;
   }
 
+  function initInboxButton() {
+    if (!orbitDb.inbox) {
+      return <button onClick={orbitDb.initInbox}>Init Inbox</button>;
+    }
+  }
+
   function connectedComponent() {
+    const inboxAddr = orbitDb.inbox ? orbitDb.inbox.address.toString() : "None";
     return (
       <div>
-        <p>{provider.addr}</p>
+        <p>Wallet Address: {provider.addr}</p>
+        <p>Mailbox OrbitDb Address: {inboxAddr}</p>
         <button onClick={provider.requestPersonalSign}>
           Request personal_sign
         </button>
+        {initInboxButton()}
       </div>
     );
   }

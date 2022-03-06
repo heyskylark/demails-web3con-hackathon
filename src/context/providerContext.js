@@ -129,11 +129,15 @@ function useProvideEthersProvider() {
     }
   }
 
+  function connectToContract(contractAddr, contractABI) {
+    return new ethers.Contract(contractAddr, contractABI, signer || provider);
+  }
+
   return {
     signer,
     addr,
     connectWallet,
     requestPersonalSign,
-    validatePersonalSign,
+    connectToContract,
   };
 }

@@ -13,6 +13,10 @@
     "ipfs-http-client": "^56.0.1",
     "orbit-db": "^0.28.3",
     "orbit-db-identity-provider": "^0.4.0",
+<<<<<<< HEAD
+    "os": "^0.1.2",
+=======
+>>>>>>> 1950ff9b2b980201c0139ce440ea62d3d3d0b8e7
     "path-browserify": "^1.0.1",
     "react": "^17.0.2",
     "react-app-rewired": "^2.2.1",
@@ -72,21 +76,5 @@
     "react-app-env": "^1.2.3",
     "solhint": "^3.3.7",
     "solidity-coverage": "^0.7.20"
-  },
-  "description": "Currently I am using Node V16 for this project. - `npm install` - `npm start`",
-  "main": ".eslintrc.js",
-  "directories": {
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/brandonfeist/decentalized-email.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/brandonfeist/decentalized-email/issues"
-  },
-  "homepage": "https://github.com/brandonfeist/decentalized-email#readme"
+  }
 }
