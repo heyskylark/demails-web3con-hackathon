@@ -202,16 +202,20 @@ function useProvideOrbitDb() {
         }
 
         email._id = email.from + "." + toAddr + "." + email.createdAt;
-        orbitDb
-          .open(receivingInboxAddr)
-          .then((receivingInbox) => {
-            console.log("Rec inbox", receivingInbox);
-            receivingInbox.put(email);
-            receivingInbox.close();
-          })
-          .catch((err) => {
-            console.log("Inbox not found, email not sent for " + toAddr, err);
-          });
+
+        try {
+          const receivingInbox = await orbitDb.open(receivingInboxAddr);
+          console.log("Rec inbox", receivingInbox);
+          const currentItems = await receivingInbox.get('')
+          console.log("CurrentItems", currentItems);
+          const put = await receivingInbox.put(email);
+          console.log("put", put);
+          const itemsAfter = await receivingInbox.get('')
+          console.log("items after", itemsAfter);
+          await receivingInbox.close();
+        } catch (err) {
+          console.log("Email send error", err);
+        }
       }
     } else {
       console.log("User's wallet must be connected to send email.");
@@ -237,6 +241,7 @@ function useProvideOrbitDb() {
     });
 
     db.events.on('ready', (dbname, heads) => {
+      console.log("ready fetching", db.get(''));
       console.log("Db fully loaded and ready", dbname);
       console.log("heads", heads);
     });
