@@ -1,18 +1,13 @@
-import "./App.css";
-import { ProvideOrbitDb } from "./context/orbitDbContext";
-import { ProvideEthersProvider } from "./context/providerContext.js";
-import Login from "./pages/Login.js";
-
-function App() {
+import React from "react";
+import Routes from "./routes";
+import { ThemeSwitch } from "./components";
+const App = () => {
   return (
-    <ProvideEthersProvider>
-      <ProvideOrbitDb>
-        <div className="App">
-          <Login />
-        </div>
-      </ProvideOrbitDb>
-    </ProvideEthersProvider>
+    <div>
+      <Routes />
+      <ThemeSwitch />
+    </div>
   );
-}
+};
 
 export default App;

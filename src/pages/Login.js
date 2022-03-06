@@ -1,29 +1,28 @@
-import { useEthersProvider } from "../context/providerContext.js";
-import { useOrbitDb } from "../context/orbitDbContext";
+import { useEthersProvider } from '../context/providerContext.js';
+import { useOrbitDb } from '../context/orbitDbContext';
+import { Button } from 'antd';
 
 function Login() {
   const provider = useEthersProvider();
   const orbitDb = useOrbitDb();
 
   function walletConnectComponent() {
-    return <button onClick={provider.connectWallet}>Press to connect!</button>;
+    return <Button onClick={provider.connectWallet}>Press to connect!</Button>;
   }
 
   function initInboxButton() {
     if (!orbitDb.inbox) {
-      return <button onClick={orbitDb.initInbox}>Init Inbox</button>;
+      return <Button onClick={orbitDb.initInbox}>Init Inbox</Button>;
     }
   }
 
   function connectedComponent() {
-    const inboxAddr = orbitDb.inbox ? orbitDb.inbox.address.toString() : "None";
+    const inboxAddr = orbitDb.inbox ? orbitDb.inbox.address.toString() : 'None';
     return (
       <div>
         <p>Wallet Address: {provider.addr}</p>
         <p>Mailbox OrbitDb Address: {inboxAddr}</p>
-        <button onClick={provider.requestPersonalSign}>
-          Request personal_sign
-        </button>
+        <Button onClick={provider.requestPersonalSign}>Request personal_sign</Button>
         {initInboxButton()}
       </div>
     );
