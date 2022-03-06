@@ -27,6 +27,13 @@ function Login() {
       }
     }
   }, [provider]);
+
+  function initInboxButton() {
+    if (!orbitDb.inbox) {
+      return <button onClick={orbitDb.initInbox}>Init Inbox</button>;
+    }
+  }
+
   function connectedComponent() {
     const inboxAddr = orbitDb.inbox ? orbitDb.inbox.address.toString() : "None";
     return (
