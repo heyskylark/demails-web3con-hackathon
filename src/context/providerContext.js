@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext, createContext } from "react";
 import { ethers } from "ethers";
+import { useNavigate } from "react-router-dom";
 
 const ethersProviderContext = createContext();
 
@@ -34,7 +35,7 @@ function useProvideEthersProvider() {
         if (accounts.length > 0) {
           const sign = provider.getSigner();
           if (sign) {
-            setSigner(provider.getSigner());
+            setSigner(sign);
             sign.getAddress().then((addr) => {
               setAddr(addr);
             });
@@ -64,11 +65,13 @@ function useProvideEthersProvider() {
   }
 
   async function requestPersonalSign() {
+    let res;
     if (provider) {
       if (addr) {
+        console.log("Requesting personal signature");
         const message =
           "Same message with a date at the end <epoch-date-in-milliseconds>";
-        window.ethereum
+        res = window.ethereum
           .request({
             method: "personal_sign",
             params: [message, addr],
@@ -89,6 +92,7 @@ function useProvideEthersProvider() {
               err
             );
           });
+        return res;
       } else {
         console.log("Cannot request personal_sign without a connected wallet");
       }

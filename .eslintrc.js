@@ -16,4 +16,13 @@ module.exports = {
       globals: { task: true },
     },
   ],
+  rules: {
+    "no-unused-vars": "warn",
+    "prettier/prettier": [
+      "error",
+      {
+        endOfLine: "auto",
+      },
+    ],
+  },
 };
