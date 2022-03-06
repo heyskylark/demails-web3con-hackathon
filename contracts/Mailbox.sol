@@ -3,28 +3,45 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Mailbox is Context {
-  mapping(address => string) private mailboxes;
+contract Mailbox is Context, Ownable {
+  mapping(address => string) private _mailboxes;
+  string private _pendingInbox;
+  uint256 private _totalInboxes;
 
   event RegisterUser(address sender, string mailboxStorage);
+  event UpdatePendingInbox(string prevAddress, string currentAddress, address operator);
   
-  constructor() {
-    // what should we do on deploy?
+  constructor(string memory inboxAddress) {
+      _pendingInbox = inboxAddress;
+      _totalInboxes = 0;
   }
 
-  function getUserInbox() external view returns (string memory) {
-    console.log(mailboxes[_msgSender()]);
-    return mailboxes[_msgSender()];
+  function getInbox() external view returns (string memory) {
+      return _mailboxes[_msgSender()];
   }
 
-  function registerUser(string memory mailboxStorage) external {
-      mailboxes[_msgSender()] = mailboxStorage;
-      console.log(_msgSender(), mailboxStorage);
+  function addInbox(string memory mailboxStorage) external {
+     
+      _mailboxes[_msgSender()] = mailboxStorage;
+      _totalInboxes += 1;
+
       emit RegisterUser(_msgSender(), mailboxStorage);
   }
+  
+  function updatePendingInbox(string memory inboxAddress) external onlyOwner() {
+      
+      string memory prevInbox = _pendingInbox;
+      _pendingInbox = inboxAddress;
 
-  // to support receiving ETH by default
-  receive() external payable {}
-  fallback() external payable {}
+      emit UpdatePendingInbox(prevInbox, _pendingInbox, _msgSender());
+  }
+  
+  function pendingInbox() public view returns (string memory) {
+      return _pendingInbox;
+  }
+  function totalInboxes() public view returns (uint256) {
+      return _totalInboxes;
+  }
 }
