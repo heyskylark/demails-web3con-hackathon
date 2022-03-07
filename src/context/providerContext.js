@@ -137,6 +137,7 @@ function useProvideEthersProvider() {
     addr,
     connectWallet,
     requestPersonalSign,
-    connectToContract
+    connectToContract,
+    validatePersonalSign,
   };
 }

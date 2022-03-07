@@ -216,15 +216,23 @@ function useProvideOrbitDb() {
       if (data) {
         const tempEmails = [];
         for (const [, value] of Object.entries(data)) {
-          gun.get(value["#"]).once((d) => tempEmails.push(d))
+          gun.get(value["#"]).once((d) => {
+            if (d) {
+              const senderAddr = d.from;
+              const signature = d.signedMessage;
+              const originalMessage = d.originalMessage;
+
+              if (
+                (senderAddr && signature && originalMessage) &&
+                provider.validatePersonalSign(senderAddr, signature, originalMessage)
+              ) {
+                tempEmails.push(d);
+              }
+            }
+          })
         }
 
-        const filter = function(element) {
-          return element;
-        }
-        const filtered = tempEmails.filter(filter)
-        console.log("filtered", filtered)
-        console.log(tempEmails)
+        console.log(tempEmails);
         setEmails(tempEmails);
       }
     }
