@@ -44,17 +44,11 @@ export default function AuthLayout(props) {
             height: "100%"
           }}>
           {props.children}
-          <img
+          <p
             style={{
-              position: "absolute",
-              bottom: "30px",
-              right: "30px",
-              zIndex: 5,
-              width: "200px"
+              "margin-top": "10px"
             }}
-            src={polygon}
-            alt=""
-          />
+          >Polygon Mumbai: 0xcAac6E79b814c46A019A29784840A187DECc2478</p>
         </div>
       </div>
     </>
