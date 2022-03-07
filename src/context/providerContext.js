@@ -101,8 +101,6 @@ function useProvideEthersProvider() {
   function validatePersonalSign(senderAddr, signature, originalMessage) {
     const recoveredAddr = ethers.utils.verifyMessage(originalMessage, signature);
 
-    console.log("Recovered addr using ecrover:", recoveredAddr);
-
     return recoveredAddr === senderAddr;
   }
 
@@ -137,6 +135,7 @@ function useProvideEthersProvider() {
     addr,
     connectWallet,
     requestPersonalSign,
-    connectToContract
+    connectToContract,
+    validatePersonalSign,
   };
 }
