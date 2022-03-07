@@ -120,8 +120,6 @@ function useProvideOrbitDb() {
       if (inboxAddr !== "<empty string>" && inboxAddr.length !== 0) {
         const inboxDb = gun.get(inboxAddr).get("public").get("emails")
 
-        console.log("Get gun myInbox", inboxDb);
-
         if (isUsersInbox) {
           getMyInbox(inboxAddr);
           setInbox(inboxDb);
@@ -232,7 +230,7 @@ function useProvideOrbitDb() {
           })
         }
 
-        console.log(tempEmails);
+        console.log("Emails:", tempEmails);
         setEmails(tempEmails);
       }
     }
