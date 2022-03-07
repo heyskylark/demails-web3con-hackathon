@@ -54,6 +54,7 @@ function useProvideOrbitDb() {
   const [inboxAddr, setInboxAddr] = useState(null);
   const [pendingMailbox, setPendingMailbox] = useState();
   const [mailboxContract, setMailboxContract] = useState(null);
+  const [emails, setEmails] = useState(null);
 
   useEffect(() => {
     function cleanup() {
@@ -122,7 +123,7 @@ function useProvideOrbitDb() {
         console.log("Get gun myInbox", inboxDb);
 
         if (isUsersInbox) {
-          getMyInbox(walletAddr);
+          getMyInbox(inboxAddr);
           setInbox(inboxDb);
           setInboxAddr(inboxAddr)
         }
@@ -204,52 +205,34 @@ function useProvideOrbitDb() {
         let receiver = gun.get(receivingInboxAddr).get("public").get("emails");
         console.log("email being sent", email);
         receiver.get(email.id).put(email);
-    //   emails.get("ID3").put({
-    //     id: 2,
-    //     body: "Hello as",
-    //     date: 456465465465
-    //   });
-        // orbitDb
-        //   .open(receivingInboxAddr)
-        //   .then((receivingInbox) => {
-        //     console.log("Rec inbox", receivingInbox);
-        //     receivingInbox.put(email);
-        //     receivingInbox.close();
-        //   })
-        //   .catch((err) => {
-        //     console.log("Inbox not found, email not sent for " + toAddr, err);
-        //   });
       }
     } else {
       console.log("User's wallet must be connected to send email.");
     }
   }
 
-  async function getMyInbox(walletAddress) {
-    
-    console.log('Listenting')
-    gun.get(walletAddress).get("public").get("emails").once(data => {
-      //console.log("Gunner2:", data);
-      for (const [key, value] of Object.entries(data)) {
-        console.log(`${key}:`,value["#"]);
-        //let receiver =  gun.get(value["#"]);
-        gun.get(value["#"]).once(data2 => {
-          console.log(data2);
-        })
-
+  async function getMyInbox(inboxAddr) {
+    function callback(data) {
+      const tempEmails = [];
+      for (const [, value] of Object.entries(data)) {
+        gun.get(value["#"]).once((d) => tempEmails.push(d))
       }
-    });
-  }
 
-  // TODO: inbox orbitDb query after first connecting/loading
-  // TODO: events to accept new emails
+      console.log(tempEmails)
+      setEmails(tempEmails);
+    }
+
+    gun.get(inboxAddr).get("public").get("emails").once(callback, true)
+  }
   // TODO: filtering spoofed emails when inbox is query when first connected and also when new emails come in through events
 
   return {
+    emails,
     inbox,
     inboxAddr,
     fetchInbox,
     initInbox,
-    sendEmail
+    sendEmail,
+    getMyInbox,
   };
 }
