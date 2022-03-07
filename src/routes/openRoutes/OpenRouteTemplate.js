@@ -1,5 +1,5 @@
-import { Link, Outlet } from "react-router-dom";
 //3rd-party impprts
+import PropTypes from "prop-types";
 import Typewriter from "typewriter-effect";
 import { Typography } from "antd";
 import { Particles } from "../../components";
@@ -13,19 +13,18 @@ function Type() {
         strings: ["To access your private message you have to connect to your favorite wallet."],
         autoStart: true,
         loop: true,
-        deleteSpeed: 10,
+        deleteSpeed: 10
       }}
     />
   );
 }
 
-export default function AuthLayout() {
+export default function AuthLayout(props) {
   return (
     <>
       <div
         style={{ width: "100vw", height: "100vh", justifyContent: "center", alignItems: "center" }}
-        className="Signin"
-      >
+        className="Signin">
         <Particles />
         <div
           style={{
@@ -35,18 +34,15 @@ export default function AuthLayout() {
             justifyContent: "center",
             flexDirection: "column",
             width: "100%",
-            height: "100%",
-          }}
-        >
-          <h1>
-            Hi,connect to your wallet ! <span className="wave">👋🏻</span>{" "}
-          </h1>
-          <h4 type="secondary">
-            <Type />
-          </h4>
-          <Outlet />
+            height: "100%"
+          }}>
+          {props.children}
         </div>
       </div>
     </>
   );
 }
+
+AuthLayout.propTypes = {
+  children: PropTypes.node
+};

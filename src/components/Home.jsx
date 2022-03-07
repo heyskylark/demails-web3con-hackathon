@@ -4,6 +4,7 @@ import { useOrbitDb } from "../context/orbitDbContext";
 import Emails from "./Emails";
 import { Button } from "antd";
 import { ExampleUI } from "./index";
+import MainLayout from "../layout/MainLayout/index";
 const Home = () => {
   const orbitDb = useOrbitDb();
   const [emails, setEmails] = React.useState([]);
@@ -13,7 +14,7 @@ const Home = () => {
     let mails = orbitDb.emails;
     if (Array.isArray(mails)) {
       console.log("Mails", mails);
-      // mails.shift(); 
+      // mails.shift();
       setEmails(mails);
     } else {
       setEmails([]);
@@ -22,18 +23,20 @@ const Home = () => {
 
   function refresh() {
     orbitDb.getMyInbox(orbitDb.inboxAddr);
-    setEmails(orbitDb.emails)
+    setEmails(orbitDb.emails);
   }
 
   return (
-    <div className="ant-mail-cover">
-      <Helmet>
-        <title>loggedin | emailDAO</title>
-      </Helmet>
-      <Button onClick={refresh}>refresh</Button>
+    <MainLayout>
+      <div className="ant-mail-cover">
+        <Helmet>
+          <title>loggedin | emailDAO</title>
+        </Helmet>
+        <Button onClick={refresh}>refresh</Button>
 
-      <Emails data={emails} />
-    </div>
+        {emails && <Emails data={emails} />}
+      </div>
+    </MainLayout>
   );
 };
 

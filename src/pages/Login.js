@@ -1,53 +1,101 @@
 import { useEthersProvider } from "../context/providerContext.js";
+import PropTypes from "prop-types";
 import { useOrbitDb } from "../context/orbitDbContext";
 import { Button } from "antd";
 import React from "react";
+import Home from "../components/Home";
+import OpenRouteTemplate from "../routes/openRoutes/OpenRouteTemplate";
+//3rd-party impprts
+import Typewriter from "typewriter-effect";
+import { Typography } from "antd";
+
+const { Text } = Typography;
+
+function Type({ text }) {
+  return (
+    <Typewriter
+      options={{
+        strings: [text],
+        autoStart: true,
+        loop: true,
+        deleteSpeed: 10
+      }}
+    />
+  );
+}
+Type.propTypes = { text: PropTypes.string };
 
 function Login() {
   const provider = useEthersProvider();
   const orbitDb = useOrbitDb();
 
   function walletConnectComponent() {
-    return <Button onClick={provider.connectWallet}>Press to connect!</Button>;
+    return (
+      <>
+        <OpenRouteTemplate>
+          <h1>
+            Hi,connect to your wallet ! <span className="wave">👋🏻</span>{" "}
+          </h1>
+          <h4 type="secondary">
+            <Type text="To access your private message you have to connect to your favorite wallet." />
+          </h4>
+          <Button onClick={provider.connectWallet}>Press to connect!</Button>
+        </OpenRouteTemplate>
+      </>
+    );
   }
 
   function initInboxButton() {
     if (!orbitDb.inbox) {
-      return <Button onClick={orbitDb.initInbox}>Init Inbox</Button>;
+      return (
+        <OpenRouteTemplate>
+          <Button onClick={orbitDb.initInbox}>Init Inbox</Button>
+        </OpenRouteTemplate>
+      );
+    } else {
+      return (
+        <>
+          <Home />{" "}
+        </>
+      );
     }
   }
-
-  function sendEmailButtonClick() {
-    const recieverAddr = "0x24b9a28CCfa9F4c1f3B8758155dEF332f85026de";
-    const email = {
-      to: [recieverAddr],
-      subject: "This is a test email",
-      body: "Hello, I am sending a test email. Love Skylark"
+  const handleRequestPersonalSign = React.useCallback(async () => {
+    const res = await provider.requestPersonalSign();
+    console.log(res);
+    console.log(window);
+    if (res) {
+      const isValidSignature = await provider.validatePersonalSign(res[2], res[0], res[1]);
+      console.log(isValidSignature);
+      if (isValidSignature) {
+        console.log(window);
+        // eslint-disable-next-line
+        sessionStorage.setItem("lastSessionSignedIn", true);
+      }
     }
-
-    orbitDb.sendEmail(email)
-  }
-
-  function testSendEmail() {
-    if (orbitDb.inbox) {
-      return <Button onClick={sendEmailButtonClick}>Test sending email</Button>;
-    }
-  }
+  }, [provider]);
 
   function connectedComponent() {
     const inboxAddr = orbitDb.inboxAddr ? orbitDb.inboxAddr : "None";
     return (
-      <div>
-        <p>Wallet Address: {provider.addr}</p>
-        <p>Mailbox OrbitDb Address: {inboxAddr}</p>
-        <Button onClick={provider.requestPersonalSign}>Request personal_sign</Button>
-        {initInboxButton()}
-        {testSendEmail()}
-      </div>
+      <>
+        <OpenRouteTemplate>
+          <h1>
+            Hi,Activate the Account ! <span className="wave">👋🏻</span>{" "}
+          </h1>
+          <h4 type="secondary">
+            <Type text="To activate Mail, you will need to sign a message through metamask." />
+          </h4>
+          <Button onClick={handleRequestPersonalSign}>Activate</Button>
+        </OpenRouteTemplate>
+      </>
     );
   }
 
   function renderLogin() {
+    if (sessionStorage.getItem("lastSessionSignedIn")) {
+      return initInboxButton();
+    }
     if (provider.signer) {
       return connectedComponent();
     } else {
@@ -55,7 +103,7 @@ function Login() {
     }
   }
 
-  return <div>{renderLogin()}</div>;
+  return <>{renderLogin()}</>;
 }
 
 export default Login;

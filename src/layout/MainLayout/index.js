@@ -1,5 +1,7 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
+import { useOrbitDb } from "../../context/orbitDbContext";
 import ReactDOM from "react-dom";
 import { useNavigate, Outlet, useParams } from "react-router-dom";
 import Signin from "../../pages/Login";
@@ -31,7 +33,8 @@ function setParams({ query }) {
   searchParams.set("compose", query || "");
   return searchParams.toString();
 }
-const SiderDemo = () => {
+const SiderDemo = (props) => {
+  const orbitDb = useOrbitDb();
   let { tab } = useParams();
   const [messageBox, showMessageBox] = React.useState(true);
 
@@ -56,15 +59,6 @@ const SiderDemo = () => {
   //     navigate("/sign-in");
   //   }
   // }, []);
-
-  React.useEffect(() => {
-    const params = getParams(window.location);
-    if (params.query === "true") {
-      showMessageBox(false);
-    } else {
-      !messageBox && showMessageBox(true);
-    }
-  }, [window.location.search]);
 
   const toggle = React.useCallback(() => {
     setCollapsed((prev) => !prev);
@@ -97,7 +91,7 @@ const SiderDemo = () => {
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo" />
         <PageHeader className="site-page-header" title="Messages" />
-        <Menu onClick={onClick} mode="inline" selectedKeys={tab}>
+        <Menu mode="inline" defaulSelectedKeys={["inbox"]}>
           <div
             style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
             className="">
@@ -140,6 +134,7 @@ const SiderDemo = () => {
           ) : (
             <MenuFoldOutlined style={{ fontSize: "1.2rem" }} onClick={toggle} />
           )}
+          <Button onClick={orbitDb.disconnectWallet}>Disconnect Wallet</Button>
         </Header>
         <Content
           className="site-layout-background"
@@ -149,11 +144,15 @@ const SiderDemo = () => {
             width: collapsed ? "calc(100vw - 80px)" : "calc(100vw - 200px)",
             overflow: "auto"
           }}>
-          <Outlet />
+          {props.children}
         </Content>
       </Layout>
     </Layout>
   );
+};
+
+SiderDemo.propTypes = {
+  children: PropTypes.node
 };
 
 export default SiderDemo;
