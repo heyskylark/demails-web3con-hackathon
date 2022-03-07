@@ -9,6 +9,17 @@
 - Send!
 
 *Note recipient may need to manually refresh inbox using button to see new emails
+*You can find the contract on Polygon Mumbai here at: [0xcAac6E79b814c46A019A29784840A187DECc2478](https://mumbai.polygonscan.com/address/0xcAac6E79b814c46A019A29784840A187DECc2478)
+
+## Feel free to send us d-mails!
+ - 0x24b9a28CCfa9F4c1f3B8758155dEF332f85026de
+ - 0x1bd506aed4e48609a63371c5e2571747a249b1b2
+ - 0xbf871a24cd733f840a091a03eca6a514157c4cdc
+ - 0xfe54a9526af80aa733f19d7520340c3c5d1d7714
+ - 0xcb7eaE15998C253c3cfb570a63f65eA22C093530
+
+## Web3Con Hackathon
+This project was made possible by [@NuzairNuwais](https://twitter.com/NuzairNuwais), [@AvniAgrawal1802](https://twitter.com/AvniAgrawal1802), [@ChimingPork](https://twitter.com/ChimingPork), [@wgg](https://twitter.com/wgg), and [@heyskylark](https://twitter.com/heyskylark). Completed for the 2022 [Web3Con](https://www.web3con.dev/), hosted by [DeveloperDAO](https://www.developerdao.com/).
 
 
 # Setup
