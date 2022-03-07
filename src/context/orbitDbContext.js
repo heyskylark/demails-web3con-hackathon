@@ -1,12 +1,10 @@
 import MailboxJson from "../utils/Mailbox.json";
 import { useState, useEffect, useContext, createContext } from "react";
 import { useEthersProvider } from "./providerContext.js";
-import Identities from "orbit-db-identity-provider";
 import PropTypes from "prop-types";
 
 const { abi } = MailboxJson;
 const IPFS = require("ipfs-http-client");
-const OrbitDB = require("orbit-db");
 
 import Gun from "gun/gun";
 
@@ -82,14 +80,6 @@ function useProvideOrbitDb() {
         });
         setGun(gun);
         console.log("-> Gun instance created");
-
-        // const identity = await Identities.createIdentity({
-        //   type: "ethereum",
-        //   signer
-        // });
-        // const orbit = await OrbitDB.createInstance(tempIpfs, { identity: identity });
-        // setOrbitDb(orbit);
-        // console.log("-> OrbitDb instance created");
 
         const contract = provider.connectToContract(mailboxContractAddr, contractABI);
         setMailboxContract(contract);
