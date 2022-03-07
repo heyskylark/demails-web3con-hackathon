@@ -107,24 +107,6 @@ function useProvideOrbitDb() {
   }, [provider.signer]);
 
   useEffect(() => {
-    // async function setupDatabase() {
-    //   const gun = Gun({
-    //     peers: ["https://gun-manhattan.herokuapp.com/gun"], // Put the relay node that you want here
-    //   });
-    //   // let gun = Gun("https://gun-manhattan.herokuapp.com/gun");
-    //   let emails = gun.get("0x1bd506aED4e48609A63371c5e2571747A249B1b2").get("public").get("emails");
-    //   emails.get("ID3").put({
-    //     id: 2,
-    //     body: "Hello as",
-    //     date: 456465465465
-    //   });
-    //   emails.on(data => {
-        
-    //     console.log(data);
-    //   });
-    //   return " ";
-    // }
-    // setupDatabase();
     if (mailboxContract && provider.addr && provider.signer && gun) {
       fetchInbox(provider.addr, true)
         .catch((err) => console.log("There was a problem fetching and loading the inbox", err));
@@ -163,25 +145,18 @@ function useProvideOrbitDb() {
       }
 
       const address = await provider.signer.getAddress();
-      const userInbox = await orbitDb.create(address, "docstore", {
-        accessController: {
-          write: ["*"]
-        }
-      });
-      const inboxAddr = userInbox.address.toString();
-      // TODO: Set AccessControl to [*] or else nobody will be able to send to inbox
-      mailboxContract
-        .addInbox(inboxAddr)
-        .then(() => {
-          setInbox(userInbox);
-          setupInboxEvents(userInbox);
-          // TODO: move pending emails from pending email DB to new DB
-          return userInbox;
-        })
-        .catch((err) => {
-          userInbox.drop();
-          console.log("There was a problem initializing the inbox", err);
-        });
+      const userInbox = await gun.get(address).get("public").get("emails")
+
+      try {
+        await mailboxContract.addInbox(address)
+        setInbox(userInbox);
+        // setupInboxEvents(userInbox);
+        // TODO: move pending emails from pending email DB to new DB
+
+        return userInbox;
+      } catch (err) {
+        console.log("There was a problem instatiating the inbox in the contract", err);
+      }
     } else {
       console.log("User's wallet is not connected");
     }
