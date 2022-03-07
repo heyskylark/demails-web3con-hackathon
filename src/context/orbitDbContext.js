@@ -123,7 +123,7 @@ function useProvideOrbitDb() {
         console.log("Get gun myInbox", inboxDb);
 
         if (isUsersInbox) {
-          getMyInbox(inboxAddr);
+          getMyInbox();
           setInbox(inboxDb);
           setInboxAddr(inboxAddr)
         }
@@ -211,7 +211,7 @@ function useProvideOrbitDb() {
     }
   }
 
-  async function getMyInbox(inboxAddr) {
+  async function getMyInbox() {
     function callback(data) {
       const tempEmails = [];
       for (const [, value] of Object.entries(data)) {
