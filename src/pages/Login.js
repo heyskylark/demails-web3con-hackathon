@@ -28,6 +28,7 @@ Type.propTypes = { text: PropTypes.string };
 function Login() {
   const provider = useEthersProvider();
   const orbitDb = useOrbitDb();
+  const [flag, setFlag] = React.useState(false);
 
   function walletConnectComponent() {
     return (
@@ -44,15 +45,18 @@ function Login() {
       </>
     );
   }
-
   function initInboxButton() {
+    console.log("initiated");
     if (!orbitDb.inbox) {
+      console.log("initiated orbit", orbitDb);
       return (
         <OpenRouteTemplate>
           <Button onClick={orbitDb.initInbox}>Init Inbox</Button>
         </OpenRouteTemplate>
       );
     } else {
+      console.log("else initiated orbit");
+
       return (
         <>
           <Home />{" "}
@@ -69,10 +73,13 @@ function Login() {
       console.log(isValidSignature);
       if (isValidSignature) {
         console.log(window);
+        setFlag(true);
+        renderLogin(true);
         // eslint-disable-next-line
         sessionStorage.setItem("lastSessionSignedIn", true);
       }
     }
+    setFlag(false);
   }, [provider]);
 
   function connectedComponent() {
@@ -91,9 +98,8 @@ function Login() {
       </>
     );
   }
-
-  function renderLogin() {
-    if (sessionStorage.getItem("lastSessionSignedIn")) {
+  function renderLogin(flag) {
+    if (flag) {
       return initInboxButton();
     }
     if (provider.signer) {
@@ -103,7 +109,7 @@ function Login() {
     }
   }
 
-  return <>{renderLogin()}</>;
+  return <>{flag ? <>dfgdf{connectedComponent()} </> : renderLogin(flag)}</>;
 }
 
 export default Login;

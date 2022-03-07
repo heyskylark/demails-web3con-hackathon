@@ -3,7 +3,6 @@ import { Helmet } from "react-helmet";
 import { useOrbitDb } from "../context/orbitDbContext";
 import Emails from "./Emails";
 import { Button } from "antd";
-import { ExampleUI } from "./index";
 import MainLayout from "../layout/MainLayout/index";
 const Home = () => {
   const orbitDb = useOrbitDb();

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 import { useOrbitDb } from "../../context/orbitDbContext";
 import ReactDOM from "react-dom";
-import { useNavigate, Outlet, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Signin from "../../pages/Login";
 import "antd/dist/antd.css";
 import { Layout, Menu, Typography, PageHeader, Button } from "antd";

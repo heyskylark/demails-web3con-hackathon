@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { ExampleUI } from "./index";
+import ExampleUI from "./ExampleUI";
 
 const Emails = ({ data }) => {
   console.log("rerendering", data);

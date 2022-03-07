@@ -8,7 +8,7 @@ import { SearchOutlined, StarFilled, StarOutlined } from "@ant-design/icons";
 const { Paragraph, Text, Title } = Typography;
 const { Meta } = Card;
 
-const ExampleUI = ({ data }) => {
+export default function ExampleUI({ data }) {
   console.log(data);
   const navigate = useNavigate();
   let date = new Date();
@@ -80,10 +80,8 @@ const ExampleUI = ({ data }) => {
       </Skeleton>
     </Card>
   );
-};
+}
 
 ExampleUI.propTypes = {
   data: PropTypes.object
 };
-
-export default ExampleUI;
