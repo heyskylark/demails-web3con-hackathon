@@ -83,13 +83,13 @@ function useProvideOrbitDb() {
         setGun(gun)
         console.log("-> Gun instance created");
 
-        const identity = await Identities.createIdentity({
-          type: "ethereum",
-          signer
-        });
-        const orbit = await OrbitDB.createInstance(tempIpfs, { identity: identity });
-        setOrbitDb(orbit);
-        console.log("-> OrbitDb instance created");
+        // const identity = await Identities.createIdentity({
+        //   type: "ethereum",
+        //   signer
+        // });
+        // const orbit = await OrbitDB.createInstance(tempIpfs, { identity: identity });
+        // setOrbitDb(orbit);
+        // console.log("-> OrbitDb instance created");
 
         const contract = provider.connectToContract(mailboxContractAddr, contractABI);
         setMailboxContract(contract);
@@ -143,16 +143,16 @@ function useProvideOrbitDb() {
       const address = await provider.signer.getAddress();
       const userInbox = await gun.get(address).get("public").get("emails")
 
-      try {
-        await mailboxContract.addInbox(address)
-        setInbox(userInbox);
-        setupInboxEvents(userInbox);
-        // TODO: move pending emails from pending email DB to new DB
+      // try {
+      //   await mailboxContract.addInbox(address)
+      //   setInbox(userInbox);
+      //   setupInboxEvents(userInbox);
+      //   // TODO: move pending emails from pending email DB to new DB
 
-        return userInbox;
-      } catch (err) {
-        console.log("There was a problem instatiating the inbox in the contract", err);
-      }
+      //   return userInbox;
+      // } catch (err) {
+      //   console.log("There was a problem instatiating the inbox in the contract", err);
+      // }
     } else {
       console.log("User's wallet is not connected");
     }
