@@ -103,7 +103,7 @@ const SiderDemo = (props) => {
           <Menu.Item key="inbox" icon={<InboxOutlined />}>
             Inbox
           </Menu.Item>
-          <Menu.Item key="sent" icon={<SendOutlined />}>
+          {/* <Menu.Item key="sent" icon={<SendOutlined />}>
             Sent
           </Menu.Item>
           <Menu.Item key="drafts" icon={<EditOutlined />}>
@@ -114,7 +114,7 @@ const SiderDemo = (props) => {
           </Menu.Item>
           <Menu.Item key="trash" icon={<DeleteOutlined />}>
             Trash
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu>
       </Sider>
       <Layout className="site-layout">
@@ -131,7 +131,6 @@ const SiderDemo = (props) => {
           ) : (
             <MenuFoldOutlined style={{ fontSize: "1.2rem" }} onClick={toggle} />
           )}
-          <Button onClick={orbitDb.disconnectWallet}>Disconnect Wallet</Button>
         </Header>
         <Content
           className="site-layout-background"
