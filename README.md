@@ -9,6 +9,7 @@
 - Send!
 
 *Note recipient may need to manually refresh inbox using button to see new emails
+
 *You can find the contract on Polygon Mumbai here at: [0xcAac6E79b814c46A019A29784840A187DECc2478](https://mumbai.polygonscan.com/address/0xcAac6E79b814c46A019A29784840A187DECc2478)
 
 ## Feel free to send us d-mails!
