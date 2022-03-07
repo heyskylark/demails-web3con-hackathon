@@ -93,23 +93,23 @@ function Login() {
           <h4 type="secondary">
             <Type text="To activate Mail, you will need to sign a message through metamask." />
           </h4>
-          <Button onClick={handleRequestPersonalSign}>Activate</Button>
         </OpenRouteTemplate>
       </>
     );
   }
-  function renderLogin(flag) {
-    if (flag) {
+  function renderLogin() {
+    if (!orbitDb.inbox) {
       return initInboxButton();
     }
-    if (provider.signer) {
-      return connectedComponent();
+
+    if (provider.addr) {
+      return <Home />;
     } else {
       return walletConnectComponent();
     }
   }
 
-  return <>{flag ? <>dfgdf{connectedComponent()} </> : renderLogin(flag)}</>;
+  return <>{renderLogin()}</>;
 }
 
 export default Login;
