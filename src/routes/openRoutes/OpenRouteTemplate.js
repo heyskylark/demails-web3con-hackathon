@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Typewriter from "typewriter-effect";
 import { Typography } from "antd";
 import { Particles } from "../../components";
+import polygon from "../../polygon.svg";
 
 const { Text } = Typography;
 
@@ -23,7 +24,13 @@ export default function AuthLayout(props) {
   return (
     <>
       <div
-        style={{ width: "100vw", height: "100vh", justifyContent: "center", alignItems: "center" }}
+        style={{
+          width: "100vw",
+          height: "100vh",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "relative"
+        }}
         className="Signin">
         <Particles />
         <div
@@ -37,6 +44,17 @@ export default function AuthLayout(props) {
             height: "100%"
           }}>
           {props.children}
+          <img
+            style={{
+              position: "absolute",
+              bottom: "30px",
+              right: "30px",
+              zIndex: 5,
+              width: "200px"
+            }}
+            src={polygon}
+            alt=""
+          />
         </div>
       </div>
     </>
