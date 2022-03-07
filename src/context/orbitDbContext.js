@@ -255,8 +255,17 @@ function useProvideOrbitDb() {
     // db.events.on('closed', (dbname) => {
     //   console.log("db closed", dbname);
     // });
-    db.on(data => {
-      console.log("Gunner2:", data);
+    console.log('Listenting')
+    gun.get("0x1bd506aED4e48609A63371c5e2571747A249B1b2").get("public").get("emails").on(data => {
+      //console.log("Gunner2:", data);
+      for (const [key, value] of Object.entries(data)) {
+        console.log(`${key}:`,value["#"]);
+        //let receiver =  gun.get(value["#"]);
+        gun.get(value["#"]).on(data2 => {
+          console.log(data2)
+        })
+
+      }
     });
   }
 
