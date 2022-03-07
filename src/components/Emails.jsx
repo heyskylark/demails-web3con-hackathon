@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import { ExampleUI } from "./index";
 
 const Emails = ({ data }) => {
-  // console.log("rerendering", data);
+  console.log("rerendering", data);
   return (
     <>
-      {data.map((index) => {
-        return <ExampleUI key={index.createdAt} />;
+      {data.map((email) => {
+        return <ExampleUI key={email.createdAt} data={email} />;
       })}
     </>
   );
