@@ -122,7 +122,7 @@ function useProvideOrbitDb() {
         console.log("Get gun myInbox", inboxDb);
 
         if (isUsersInbox) {
-          setupInboxEvents(inboxDb);
+          getMyInbox(walletAddr);
           setInbox(inboxDb);
           setInboxAddr(inboxAddr)
         }
@@ -225,44 +225,16 @@ function useProvideOrbitDb() {
     }
   }
 
-  function setupInboxEvents(db) {
-    // db.events.on('replicated', (address) => {
-    //   console.log("Synced with another peer, addres", address);
-    // });
+  async function getMyInbox(walletAddress) {
     
-    // db.events.on('replicate', (address) => {
-    //   console.log("replicating with peer", address);
-    // });
-
-    // db.events.on('replicate.progress', (address, hash, entry, progress, have) => {
-    //   console.log("Replication progress")
-    //   console.log("address", address);
-    //   console.log("hash", hash);
-    //   console.log("entry", entry);
-    //   console.log("progress", progress);
-    //   console.log("dp peices we have", have);
-    // });
-
-    // db.events.on('ready', (dbname, heads) => {
-    //   console.log("Db fully loaded and ready", dbname);
-    //   console.log("heads", heads);
-    // });
-
-    // db.events.on('peer', (peer) => {
-    //   console.log("new peer connected", peer);
-    // });
-
-    // db.events.on('closed', (dbname) => {
-    //   console.log("db closed", dbname);
-    // });
     console.log('Listenting')
-    gun.get("0x1bd506aED4e48609A63371c5e2571747A249B1b2").get("public").get("emails").on(data => {
+    gun.get(walletAddress).get("public").get("emails").once(data => {
       //console.log("Gunner2:", data);
       for (const [key, value] of Object.entries(data)) {
         console.log(`${key}:`,value["#"]);
         //let receiver =  gun.get(value["#"]);
-        gun.get(value["#"]).on(data2 => {
-          console.log(data2)
+        gun.get(value["#"]).once(data2 => {
+          console.log(data2);
         })
 
       }
