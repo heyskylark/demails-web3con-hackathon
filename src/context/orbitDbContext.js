@@ -53,7 +53,7 @@ function useProvideOrbitDb() {
   const [inboxAddr, setInboxAddr] = useState(null);
   const [pendingMailbox, setPendingMailbox] = useState();
   const [mailboxContract, setMailboxContract] = useState(null);
-  const [emails, setEmails] = useState(null);
+  const [emails, setEmails] = useState([]);
 
   useEffect(() => {
     function cleanup() {
@@ -210,7 +210,7 @@ function useProvideOrbitDb() {
   async function getMyInbox(inboxAddr) {
     function callback(data) {
       if (data) {
-        const tempEmails = [];
+        let tempEmails = [];
         for (const [, value] of Object.entries(data)) {
           gun.get(value["#"]).once((d) => {
             if (d) {
@@ -230,12 +230,13 @@ function useProvideOrbitDb() {
           });
         }
 
-        console.log("Emails:", tempEmails);
         setEmails(tempEmails);
       }
     }
 
-    gun.get(inboxAddr).get("public").get("emails").once(callback, true);
+    if (gun) {
+      gun.get(inboxAddr).get("public").get("emails").once(callback, true);
+    }
   }
   // TODO: filtering spoofed emails when inbox is query when first connected and also when new emails come in through events
 
