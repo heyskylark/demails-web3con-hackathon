@@ -147,6 +147,7 @@ function useProvideOrbitDb() {
       try {
         await mailboxContract.addInbox(address)
         setInbox(userInbox);
+        setInboxAddr(address);
         // TODO: move pending emails from pending email DB to new DB
 
         return userInbox;
