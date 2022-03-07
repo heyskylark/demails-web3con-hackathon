@@ -48,8 +48,10 @@ function useProvideOrbitDb() {
   const contractABI = abi;
 
   const [ipfs, setIpfs] = useState(null);
+  const [gun, setGun] = useState(null);
   const [orbitDb, setOrbitDb] = useState(null);
   const [inbox, setInbox] = useState(null);
+  const [inboxAddr, setInboxAddr] = useState(null);
   const [pendingMailbox, setPendingMailbox] = useState();
   const [mailboxContract, setMailboxContract] = useState(null);
 
@@ -63,86 +65,90 @@ function useProvideOrbitDb() {
       }
     }
 
-    const signer = provider.signer;
-    if (provider.signer) {
-      let tempIpfs;
-      if (ipfs) {
-        tempIpfs = ipfs;
-      } else {
-        tempIpfs = IPFS.create(ipfsOptions);
-        setIpfs(tempIpfs);
-      }
-      console.log("-> IPFS node connected");
+    async function databaseSetup() {
+      const signer = provider.signer;
+      if (provider.signer) {
+        let tempIpfs;
+        if (ipfs) {
+          tempIpfs = ipfs;
+        } else {
+          tempIpfs = IPFS.create(ipfsOptions);
+          setIpfs(tempIpfs);
+        }
+        console.log("-> IPFS node connected");
 
-      Identities.createIdentity({
-        type: "ethereum",
-        signer
-      })
-        .then((identity) => {
-          OrbitDB.createInstance(tempIpfs, { identity: identity }).then((orbit) => {
-            setOrbitDb(orbit);
-            console.log("-> OrbitDb instance created");
-          });
+        const gun = Gun({
+          peers: ["https://gun-manhattan.herokuapp.com/gun"], // Put the relay node that you want here
         })
-        .catch((err) => {
-          console.log("There was a problem getting the OrbitDb identity", err);
-        });
+        setGun(gun)
+        console.log("-> Gun instance created");
 
-      const contract = provider.connectToContract(mailboxContractAddr, contractABI);
-      setMailboxContract(contract);
-      contract.pendingInbox().then((pendingMailboxAddr) => {
+        const identity = await Identities.createIdentity({
+          type: "ethereum",
+          signer
+        });
+        const orbit = await OrbitDB.createInstance(tempIpfs, { identity: identity });
+        setOrbitDb(orbit);
+        console.log("-> OrbitDb instance created");
+
+        const contract = provider.connectToContract(mailboxContractAddr, contractABI);
+        setMailboxContract(contract);
+        const pendingMailboxAddr = await contract.pendingInbox()
         setPendingMailbox(pendingMailboxAddr);
-      });
-    } else {
-      cleanup();
+      } else {
+        cleanup();
+      }
     }
+
+    databaseSetup()
+      .catch((err) => console.log("Error setting up database", err));
 
     return cleanup();
   }, [provider.signer]);
 
   useEffect(() => {
-    async function setupDatabase() {
-      const gun = Gun({
-        peers: ["https://gun-manhattan.herokuapp.com/gun"], // Put the relay node that you want here
-      });
-      // let gun = Gun("https://gun-manhattan.herokuapp.com/gun");
-      let emails = gun.get("0x1bd506aED4e48609A63371c5e2571747A249B1b2").get("public").get("emails");
-      emails.get("ID3").put({
-        id: 2,
-        body: "Hello as",
-        date: 456465465465
-      });
-      emails.on(data => {
+    // async function setupDatabase() {
+    //   const gun = Gun({
+    //     peers: ["https://gun-manhattan.herokuapp.com/gun"], // Put the relay node that you want here
+    //   });
+    //   // let gun = Gun("https://gun-manhattan.herokuapp.com/gun");
+    //   let emails = gun.get("0x1bd506aED4e48609A63371c5e2571747A249B1b2").get("public").get("emails");
+    //   emails.get("ID3").put({
+    //     id: 2,
+    //     body: "Hello as",
+    //     date: 456465465465
+    //   });
+    //   emails.on(data => {
         
-        console.log(data);
-      });
-      return " ";
+    //     console.log(data);
+    //   });
+    //   return " ";
+    // }
+    // setupDatabase();
+    if (mailboxContract && provider.addr && provider.signer && gun) {
+      fetchInbox(provider.addr, true)
+        .catch((err) => console.log("There was a problem fetching and loading the inbox", err));
     }
-    setupDatabase();
-    if (provider.addr && provider.signer && orbitDb) {
-      fetchInbox(provider.addr, true);
-    }
-  }, [provider.addr, orbitDb]);
+  }, [mailboxContract, provider.addr, orbitDb]);
 
   async function fetchInbox(walletAddr, isUsersInbox) {
-    if (provider.signer && orbitDb) {
-      mailboxContract.getInbox(walletAddr).then((inboxAddr) => {
-        if (inboxAddr !== "<empty string>" && inboxAddr.length !== 0) {
-          orbitDb
-            .open(inboxAddr)
-            .then((inboxDb) => {
-              inboxDb.load();
+    if (mailboxContract && provider.signer && gun) {
+      const inboxAddr = await mailboxContract.getInbox(walletAddr);
+      if (inboxAddr !== "<empty string>" && inboxAddr.length !== 0) {
+        const inboxDb = gun.get(inboxAddr).get("public").get("emails")
 
-              if (isUsersInbox) {
-                setupInboxEvents(inboxDb);
-                setInbox(inboxDb);
-              }
-            })
-            .catch((err) => {
-              console.log("Inbox could not be found for this user", err);
-            });
+        console.log("Get gun myInbox", inboxDb);
+
+        if (isUsersInbox) {
+          // setupInboxEvents(inboxDb);
+          setInbox(inboxDb);
+          setInboxAddr(inboxAddr)
         }
-      });
+
+        inboxDb.on(data => {
+          console.log("Gunner2:", data);
+        });
+      }
     } else {
       console.log("User's wallet is not connected");
     }
@@ -277,6 +283,7 @@ function useProvideOrbitDb() {
 
   return {
     inbox,
+    inboxAddr,
     fetchInbox,
     initInbox,
     sendEmail

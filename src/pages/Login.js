@@ -34,23 +34,8 @@ function Login() {
     }
   }
 
-  const handleRequestPersonalSign = React.useCallback(async () => {
-    const res = await provider.requestPersonalSign();
-    console.log(res);
-    console.log(window);
-    if (res) {
-      const isValidSignature = await provider.validatePersonalSign(res[2], res[0], res[1]);
-      console.log(isValidSignature);
-      if (isValidSignature) {
-        console.log(window);
-        // eslint-disable-next-line
-        sessionStorage.setItem("lastSessionSignedIn", true);
-      }
-    }
-  }, [provider]);
-
   function connectedComponent() {
-    const inboxAddr = orbitDb.inbox ? orbitDb.inbox.address.toString() : "None";
+    const inboxAddr = orbitDb.inboxAddr ? orbitDb.inboxAddr : "None";
     return (
       <div>
         <p>Wallet Address: {provider.addr}</p>
