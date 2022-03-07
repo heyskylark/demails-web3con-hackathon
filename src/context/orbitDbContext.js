@@ -228,17 +228,26 @@ function useProvideOrbitDb() {
           console.log("Sending to inbox", receivingInboxAddr);
         }
 
-        email._id = email.from + "." + toAddr + "." + email.createdAt;
-        orbitDb
-          .open(receivingInboxAddr)
-          .then((receivingInbox) => {
-            console.log("Rec inbox", receivingInbox);
-            receivingInbox.put(email);
-            receivingInbox.close();
-          })
-          .catch((err) => {
-            console.log("Inbox not found, email not sent for " + toAddr, err);
-          });
+        email.id = email.from + "." + toAddr + "." + email.createdAt;
+        email.to = receivingInboxAddr
+        let receiver = gun.get(receivingInboxAddr).get("public").get("emails");
+        console.log("email being sent", email);
+        receiver.get(email.id).put(email);
+    //   emails.get("ID3").put({
+    //     id: 2,
+    //     body: "Hello as",
+    //     date: 456465465465
+    //   });
+        // orbitDb
+        //   .open(receivingInboxAddr)
+        //   .then((receivingInbox) => {
+        //     console.log("Rec inbox", receivingInbox);
+        //     receivingInbox.put(email);
+        //     receivingInbox.close();
+        //   })
+        //   .catch((err) => {
+        //     console.log("Inbox not found, email not sent for " + toAddr, err);
+        //   });
       }
     } else {
       console.log("User's wallet must be connected to send email.");
