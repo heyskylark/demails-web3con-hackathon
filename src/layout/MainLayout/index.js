@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
+import Logo from "../../favicon-32x32.png";
 import { useOrbitDb } from "../../context/orbitDbContext";
 import ReactDOM from "react-dom";
 import { useNavigate, useParams } from "react-router-dom";
@@ -88,7 +89,7 @@ const SiderDemo = (props) => {
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo" />
         <PageHeader className="site-page-header" title="Messages" />
-        <Menu mode="inline" defaulSelectedKeys={["inbox"]}>
+        <Menu mode="inline" selectedKeys={["inbox"]}>
           <div
             style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
             className="">
@@ -131,6 +132,7 @@ const SiderDemo = (props) => {
           ) : (
             <MenuFoldOutlined style={{ fontSize: "1.2rem" }} onClick={toggle} />
           )}
+          <img style={{ width: "50px", height: "50px", marginRight: "10px" }} src={Logo} alt="" />
         </Header>
         <Content
           className="site-layout-background"

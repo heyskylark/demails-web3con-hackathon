@@ -65,7 +65,7 @@ function Login() {
   }
 
   function renderLogin() {
-    if (!orbitDb.inbox) {
+    if (provider.addr && !orbitDb.inbox) {
       return initInboxButton();
     }
 
