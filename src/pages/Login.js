@@ -2,11 +2,12 @@ import { useEthersProvider } from "../context/providerContext.js";
 import { useOrbitDb } from "../context/orbitDbContext";
 import { Button } from "antd";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const provider = useEthersProvider();
   const orbitDb = useOrbitDb();
-
+  const navigate = useNavigate();
   function walletConnectComponent() {
     return <Button onClick={provider.connectWallet}>Press to connect!</Button>;
   }
@@ -14,6 +15,8 @@ function Login() {
   function initInboxButton() {
     if (!orbitDb.inbox) {
       return <Button onClick={orbitDb.initInbox}>Init Inbox</Button>;
+    } else {
+      navigate("/logged-in/inbox");
     }
   }
 
