@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from "react";
+import { useOrbitDb } from "../../context/orbitDbContext";
+import { message } from "antd";
+import PropTypes from "prop-types";
 import {
   MessageBoxContainer,
   MessageBoxTop,
@@ -15,23 +17,25 @@ import {
   BottomLeftIcons,
   BottomRight,
   BottomRightIcons
-} from './message-box.styles';
-import { useNavigate } from 'react-router-dom';
+} from "./message-box.styles";
+import { useNavigate } from "react-router-dom";
 
-const MessageBox = ({ showMessage, shouldMessageShow, addSent }) => {
+const MessageBox = ({ showMessage, shouldMessageShow, handleClose }) => {
+  const orbitDb = useOrbitDb();
+
   let monthList = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sept',
-    'Oct',
-    'Nov',
-    'Dec'
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sept",
+    "Oct",
+    "Nov",
+    "Dec"
   ];
   const navigate = useNavigate();
   const formatDate = (item) => {
@@ -48,9 +52,9 @@ const MessageBox = ({ showMessage, shouldMessageShow, addSent }) => {
   // console.log(month);
 
   const [messageDetail, updateMessageDetail] = useState({
-    to: '',
-    subject: '',
-    body: '',
+    to: "",
+    subject: "",
+    body: "",
     month: timeSent
   });
   const [expanded, setExpanded] = React.useState(false);
@@ -67,7 +71,7 @@ const MessageBox = ({ showMessage, shouldMessageShow, addSent }) => {
     updateMessageDetail({ ...messageDetail, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // updateMessageDetail({
     //   to: receiver,
@@ -75,41 +79,32 @@ const MessageBox = ({ showMessage, shouldMessageShow, addSent }) => {
     //   body: content,
     // });
 
-    // const data = {
-    //   to: receiver,
-    //   subject: topic,
-    //   body: content,
-    //   month: timeSent,
-    // };
-
-    if (to !== '' && body !== '' && subject !== '') {
+    console.log(messageDetail);
+    if (to !== "" && body !== "" && subject !== "") {
       shouldMessageShow(true);
-      addSent(messageDetail);
+      const recieverAddr = to;
+      const email = {
+        to: [recieverAddr],
+        subject,
+        body
+      };
+
+      let res = await orbitDb.sendEmail(email);
+      console.log(res);
+      if (res) {
+        message.success(res.reason);
+      } else {
+        message.error(res.reason);
+      }
     }
 
     updateMessageDetail({
-      to: '',
-      subject: '',
-      body: '',
+      to: "",
+      subject: "",
+      body: "",
       month: timeSent
     });
-  };
-
-  // const handleChange = (event) => {
-  //   // const { name, value } = event.target;
-
-  //   updateMessageDetail({ [event.target.name]: event.target.value });
-  // };
-
-  const handleClose = () => {
-    // shouldMessageShow(true);
-    // updateMessageDetail({
-    //   to: "",
-    //   subject: "",
-    //   body: "",
-    //   month: timeSent,
-    // });
-    navigate(window.location.pathname);
+    handleClose();
   };
 
   return (
@@ -203,6 +198,6 @@ MessageBox.propTypes = {
   // are all optional.
   showMessage: PropTypes.bool,
   shouldMessageShow: PropTypes.func,
-  addSent: PropTypes.func
+  handleClose: PropTypes.func
 };
 export default MessageBox;

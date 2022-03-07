@@ -1,6 +1,5 @@
 import { useEffect, useState, useContext, createContext } from "react";
 import { ethers } from "ethers";
-import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const ethersProviderContext = createContext();
@@ -30,17 +29,22 @@ function useProvideEthersProvider() {
   useEffect(() => {
     if (provider) {
       setupConnectEvents();
-      provider.listAccounts().then((accounts) => {
-        if (accounts.length > 0) {
-          const sign = provider.getSigner();
-          if (sign) {
-            setSigner(sign);
-            sign.getAddress().then((addr) => {
-              setAddr(addr);
-            });
+      provider
+        .listAccounts()
+        .then((accounts) => {
+          if (accounts.length > 0) {
+            const sign = provider.getSigner();
+            if (sign) {
+              setSigner(sign);
+              sign.getAddress().then((addr) => {
+                setAddr(addr);
+              });
+            }
           }
-        }
-      });
+        })
+        .catch((err) => {
+          console.log("WTF", err);
+        });
     }
   }, []);
 
@@ -70,24 +74,24 @@ function useProvideEthersProvider() {
         console.log("Requesting personal signature");
         const message =
           "This message will be used to validate you are the email sender! " + Date.now();
-        window.ethereum
-          .request({
+
+        try {
+          const signature = await window.ethereum.request({
             method: "personal_sign",
             params: [message, addr]
-          })
-          .then((signature) => {
-            console.log("Original address:", addr);
-            console.log("Signed message:", signature);
-            console.log(
-              "Original address is proven to be the actual sender:",
-              validatePersonalSign(addr, signature, message)
-            );
-
-            return [signature, message, addr];
-          })
-          .catch((err) => {
-            console.log("There was a problem retrieving the personal_sign", err);
           });
+
+          console.log("Original address:", addr);
+          console.log("Signed message:", signature);
+          console.log(
+            "Original address is proven to be the actual sender:",
+            validatePersonalSign(addr, signature, message)
+          );
+
+          return [signature, message, addr];
+        } catch (err) {
+          console.log("There was a problem retrieving the personal_sign", err);
+        }
         return res;
       } else {
         console.log("Cannot request personal_sign without a connected wallet");
@@ -98,12 +102,11 @@ function useProvideEthersProvider() {
   function validatePersonalSign(senderAddr, signature, originalMessage) {
     const recoveredAddr = ethers.utils.verifyMessage(originalMessage, signature);
 
-    console.log("Recovered addr using ecrover:", recoveredAddr);
-
     return recoveredAddr === senderAddr;
   }
 
   function disconnectWallet() {
+    console.log("disconnectWallet");
     setSigner(null);
     setAddr(null);
   }
@@ -134,6 +137,8 @@ function useProvideEthersProvider() {
     addr,
     connectWallet,
     requestPersonalSign,
-    connectToContract
+    connectToContract,
+    validatePersonalSign,
+    disconnectWallet
   };
 }

@@ -1,10 +1,10 @@
 import React from "react";
-import Routes from "./routes";
+import Login from "./pages/Login";
 import { ThemeSwitch } from "./components";
 const App = () => {
   return (
     <div>
-      <Routes />
+      <Login />
       <ThemeSwitch />
     </div>
   );
