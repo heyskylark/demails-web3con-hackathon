@@ -8,8 +8,7 @@ const { abi } = MailboxJson;
 const IPFS = require("ipfs-http-client");
 const OrbitDB = require("orbit-db");
 
-import Gun from 'gun/gun';
-
+import Gun from "gun/gun";
 
 const orbitDbContext = createContext();
 
@@ -79,9 +78,9 @@ function useProvideOrbitDb() {
         console.log("-> IPFS node connected");
 
         const gun = Gun({
-          peers: ["https://gun-manhattan.herokuapp.com/gun"], // Put the relay node that you want here
-        })
-        setGun(gun)
+          peers: ["https://gun-manhattan.herokuapp.com/gun"] // Put the relay node that you want here
+        });
+        setGun(gun);
         console.log("-> Gun instance created");
 
         // const identity = await Identities.createIdentity({
@@ -94,23 +93,23 @@ function useProvideOrbitDb() {
 
         const contract = provider.connectToContract(mailboxContractAddr, contractABI);
         setMailboxContract(contract);
-        const pendingMailboxAddr = await contract.pendingInbox()
+        const pendingMailboxAddr = await contract.pendingInbox();
         setPendingMailbox(pendingMailboxAddr);
       } else {
         cleanup();
       }
     }
 
-    databaseSetup()
-      .catch((err) => console.log("Error setting up database", err));
+    databaseSetup().catch((err) => console.log("Error setting up database", err));
 
     return cleanup();
   }, [provider.signer]);
 
   useEffect(() => {
     if (mailboxContract && provider.addr && provider.signer && gun) {
-      fetchInbox(provider.addr, true)
-        .catch((err) => console.log("There was a problem fetching and loading the inbox", err));
+      fetchInbox(provider.addr, true).catch((err) =>
+        console.log("There was a problem fetching and loading the inbox", err)
+      );
     }
   }, [mailboxContract, provider.addr, orbitDb]);
 
@@ -118,14 +117,14 @@ function useProvideOrbitDb() {
     if (mailboxContract && provider.signer && gun) {
       const inboxAddr = await mailboxContract.getInbox(walletAddr);
       if (inboxAddr !== "<empty string>" && inboxAddr.length !== 0) {
-        const inboxDb = gun.get(inboxAddr).get("public").get("emails")
+        const inboxDb = gun.get(inboxAddr).get("public").get("emails");
 
         console.log("Get gun myInbox", inboxDb);
 
         if (isUsersInbox) {
           getMyInbox(inboxAddr);
           setInbox(inboxDb);
-          setInboxAddr(inboxAddr)
+          setInboxAddr(inboxAddr);
         }
       }
     } else {
@@ -142,10 +141,10 @@ function useProvideOrbitDb() {
       }
 
       const address = await provider.signer.getAddress();
-      const userInbox = await gun.get(address).get("public").get("emails")
+      const userInbox = await gun.get(address).get("public").get("emails");
 
       try {
-        await mailboxContract.addInbox(address)
+        await mailboxContract.addInbox(address);
         setInbox(userInbox);
         setInboxAddr(address);
         // TODO: move pending emails from pending email DB to new DB
@@ -182,7 +181,7 @@ function useProvideOrbitDb() {
 
       const [signature, message, senderAddress] = await provider.requestPersonalSign();
 
-      email.from = senderAddress
+      email.from = senderAddress;
       email.signedMessage = signature;
       email.originalMessage = message;
       email.createdAt = Date.now();
@@ -190,9 +189,8 @@ function useProvideOrbitDb() {
       const toEmails = email.to;
       for (let emailIndex = 0; emailIndex < toEmails.length; emailIndex++) {
         const toAddr = toEmails[emailIndex];
-        const receivingInboxAddr =
-          (await mailboxContract.getInbox(toAddr)) || pendingMailbox;
-        
+        const receivingInboxAddr = (await mailboxContract.getInbox(toAddr)) || pendingMailbox;
+
         if (!receivingInboxAddr) {
           console.log("Could not find inbox to send to");
           return;
@@ -201,7 +199,7 @@ function useProvideOrbitDb() {
         }
 
         email.id = email.from + "." + toAddr + "." + email.createdAt;
-        email.to = receivingInboxAddr
+        email.to = receivingInboxAddr;
         let receiver = gun.get(receivingInboxAddr).get("public").get("emails");
         console.log("email being sent", email);
         receiver.get(email.id).put(email);
@@ -216,20 +214,21 @@ function useProvideOrbitDb() {
       if (data) {
         const tempEmails = [];
         for (const [, value] of Object.entries(data)) {
-          gun.get(value["#"]).once((d) => tempEmails.push(d))
+          console.log(data);
+          gun.get(value["#"]).once((d) => tempEmails.push(d));
         }
 
-        const filter = function(element) {
+        const filter = function (element) {
           return element;
-        }
-        const filtered = tempEmails.filter(filter)
-        console.log("filtered", filtered)
-        console.log(tempEmails)
+        };
+        const filtered = tempEmails.filter(filter);
+        console.log("filtered", filtered);
+        console.log(tempEmails);
         setEmails(tempEmails);
       }
     }
 
-    gun.get(inboxAddr).get("public").get("emails").once(callback, true)
+    gun.get(inboxAddr).get("public").get("emails").once(callback, true);
   }
   // TODO: filtering spoofed emails when inbox is query when first connected and also when new emails come in through events
 
@@ -240,6 +239,6 @@ function useProvideOrbitDb() {
     fetchInbox,
     initInbox,
     sendEmail,
-    getMyInbox,
+    getMyInbox
   };
 }
