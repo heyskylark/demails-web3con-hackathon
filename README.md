@@ -1,3 +1,16 @@
+# How To Acces D-Email
+
+- Visit https://www.demails.xyz/
+- Make sure your wallet is connected to the [Polygon Mumbai Testnet](https://docs.polygon.technology/docs/develop/metamask/config-polygon-on-metamask/)
+- Add testnet Matic if needed using a [faucet](https://faucet.polygon.technology/)
+- Connect wallet (using Mumbai Testnet)
+- Select Init Inbox
+- Use recipient's wallet address as the address you are sending your email to.
+- Send!
+
+*Note recipient may need to manually refresh inbox using button to see new emails
+
+
 # Setup
 Currently I am using Node v16 for this project. Node v17 is **not** compatible with hardhat at this time.
 - `npm install`
