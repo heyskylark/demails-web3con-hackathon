@@ -122,14 +122,10 @@ function useProvideOrbitDb() {
         console.log("Get gun myInbox", inboxDb);
 
         if (isUsersInbox) {
-          // setupInboxEvents(inboxDb);
+          setupInboxEvents(inboxDb);
           setInbox(inboxDb);
           setInboxAddr(inboxAddr)
         }
-
-        inboxDb.on(data => {
-          console.log("Gunner2:", data);
-        });
       }
     } else {
       console.log("User's wallet is not connected");
@@ -150,7 +146,7 @@ function useProvideOrbitDb() {
       try {
         await mailboxContract.addInbox(address)
         setInbox(userInbox);
-        // setupInboxEvents(userInbox);
+        setupInboxEvents(userInbox);
         // TODO: move pending emails from pending email DB to new DB
 
         return userInbox;
@@ -230,34 +226,37 @@ function useProvideOrbitDb() {
   }
 
   function setupInboxEvents(db) {
-    db.events.on('replicated', (address) => {
-      console.log("Synced with another peer, addres", address);
-    });
+    // db.events.on('replicated', (address) => {
+    //   console.log("Synced with another peer, addres", address);
+    // });
     
-    db.events.on('replicate', (address) => {
-      console.log("replicating with peer", address);
-    });
+    // db.events.on('replicate', (address) => {
+    //   console.log("replicating with peer", address);
+    // });
 
-    db.events.on('replicate.progress', (address, hash, entry, progress, have) => {
-      console.log("Replication progress")
-      console.log("address", address);
-      console.log("hash", hash);
-      console.log("entry", entry);
-      console.log("progress", progress);
-      console.log("dp peices we have", have);
-    });
+    // db.events.on('replicate.progress', (address, hash, entry, progress, have) => {
+    //   console.log("Replication progress")
+    //   console.log("address", address);
+    //   console.log("hash", hash);
+    //   console.log("entry", entry);
+    //   console.log("progress", progress);
+    //   console.log("dp peices we have", have);
+    // });
 
-    db.events.on('ready', (dbname, heads) => {
-      console.log("Db fully loaded and ready", dbname);
-      console.log("heads", heads);
-    });
+    // db.events.on('ready', (dbname, heads) => {
+    //   console.log("Db fully loaded and ready", dbname);
+    //   console.log("heads", heads);
+    // });
 
-    db.events.on('peer', (peer) => {
-      console.log("new peer connected", peer);
-    });
+    // db.events.on('peer', (peer) => {
+    //   console.log("new peer connected", peer);
+    // });
 
-    db.events.on('closed', (dbname) => {
-      console.log("db closed", dbname);
+    // db.events.on('closed', (dbname) => {
+    //   console.log("db closed", dbname);
+    // });
+    db.on(data => {
+      console.log("Gunner2:", data);
     });
   }
 
