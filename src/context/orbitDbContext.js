@@ -123,7 +123,7 @@ function useProvideOrbitDb() {
         console.log("Get gun myInbox", inboxDb);
 
         if (isUsersInbox) {
-          getMyInbox();
+          getMyInbox(inboxAddr);
           setInbox(inboxDb);
           setInboxAddr(inboxAddr)
         }
@@ -211,10 +211,10 @@ function useProvideOrbitDb() {
     }
   }
 
-  async function getMyInbox() {
+  async function getMyInbox(inboxAddr) {
     function callback(data) {
       const tempEmails = [];
-      for (const [, value] of Object.entries(data)) {
+      for (const [key, value] of Object.entries(data)) {
         gun.get(value["#"]).once((d) => tempEmails.push(d))
       }
 
