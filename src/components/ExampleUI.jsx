@@ -14,12 +14,8 @@ export default function ExampleUI({ data }) {
   let date = new Date();
   date.setTime(data?.createdAt);
 
-  const handleClick = React.useCallback(() => {
-    navigate(window.location.pathname + "/" + data?.id);
-  }, []);
-
   return (
-    <Card onClick={handleClick} hoverable>
+    <Card hoverable>
       <Skeleton style={{ display: "flex", flexDirection: "row" }} loading={false} avatar active>
         <Meta
           avatar={

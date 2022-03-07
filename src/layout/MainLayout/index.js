@@ -70,10 +70,7 @@ const SiderDemo = (props) => {
   }, []);
 
   const handleComposerDialog = React.useCallback(() => {
-    console.log("sdffr");
-    const url = setParams({ query: true });
-    console.log("sdffr", url);
-    navigate(`${window.location.pathname}?${url}`);
+    showMessageBox(false);
   }, []);
 
   return (
@@ -84,8 +81,8 @@ const SiderDemo = (props) => {
       <MessageBox
         showMessage={messageBox}
         shouldMessageShow={showMessageBox}
-        addSent={() => {
-          showMessageBox(false);
+        handleClose={() => {
+          showMessageBox(true);
         }}
       />
       <Sider trigger={null} collapsible collapsed={collapsed}>

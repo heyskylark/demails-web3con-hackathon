@@ -20,7 +20,7 @@ import {
 } from "./message-box.styles";
 import { useNavigate } from "react-router-dom";
 
-const MessageBox = ({ showMessage, shouldMessageShow, addSent }) => {
+const MessageBox = ({ showMessage, shouldMessageShow, handleClose }) => {
   const orbitDb = useOrbitDb();
 
   let monthList = [
@@ -82,7 +82,6 @@ const MessageBox = ({ showMessage, shouldMessageShow, addSent }) => {
     console.log(messageDetail);
     if (to !== "" && body !== "" && subject !== "") {
       shouldMessageShow(true);
-      addSent(messageDetail);
       const recieverAddr = to;
       const email = {
         to: [recieverAddr],
@@ -106,23 +105,6 @@ const MessageBox = ({ showMessage, shouldMessageShow, addSent }) => {
       month: timeSent
     });
     handleClose();
-  };
-
-  // const handleChange = (event) => {
-  //   // const { name, value } = event.target;
-
-  //   updateMessageDetail({ [event.target.name]: event.target.value });
-  // };
-
-  const handleClose = () => {
-    // shouldMessageShow(true);
-    // updateMessageDetail({
-    //   to: "",
-    //   subject: "",
-    //   body: "",
-    //   month: timeSent,
-    // });
-    navigate(window.location.pathname);
   };
 
   return (
@@ -216,6 +198,6 @@ MessageBox.propTypes = {
   // are all optional.
   showMessage: PropTypes.bool,
   shouldMessageShow: PropTypes.func,
-  addSent: PropTypes.func
+  handleClose: PropTypes.func
 };
 export default MessageBox;
