@@ -191,7 +191,7 @@ function useProvideOrbitDb() {
 
         if (!receivingInboxAddr) {
           console.log("Could not find inbox to send to");
-          return;
+          return { status: false, reason: "Could not find inbox to send to" };
         } else {
           console.log("Sending to inbox", receivingInboxAddr);
         }
@@ -201,9 +201,11 @@ function useProvideOrbitDb() {
         let receiver = gun.get(receivingInboxAddr).get("public").get("emails");
         console.log("email being sent", email);
         receiver.get(email.id).put(email);
+        return { status: true, reason: "Email Sent Successfully" };
       }
     } else {
       console.log("User's wallet must be connected to send email.");
+      return { status: false, reason: "User's wallet must be connected to send email." };
     }
   }
 
