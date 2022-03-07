@@ -144,16 +144,15 @@ function useProvideOrbitDb() {
       const address = await provider.signer.getAddress();
       const userInbox = await gun.get(address).get("public").get("emails")
 
-      // try {
-      //   await mailboxContract.addInbox(address)
-      //   setInbox(userInbox);
-      //   setupInboxEvents(userInbox);
-      //   // TODO: move pending emails from pending email DB to new DB
+      try {
+        await mailboxContract.addInbox(address)
+        setInbox(userInbox);
+        // TODO: move pending emails from pending email DB to new DB
 
-      //   return userInbox;
-      // } catch (err) {
-      //   console.log("There was a problem instatiating the inbox in the contract", err);
-      // }
+        return userInbox;
+      } catch (err) {
+        console.log("There was a problem instatiating the inbox in the contract", err);
+      }
     } else {
       console.log("User's wallet is not connected");
     }
@@ -213,13 +212,20 @@ function useProvideOrbitDb() {
 
   async function getMyInbox(inboxAddr) {
     function callback(data) {
-      const tempEmails = [];
-      for (const [key, value] of Object.entries(data)) {
-        gun.get(value["#"]).once((d) => tempEmails.push(d))
-      }
+      if (data) {
+        const tempEmails = [];
+        for (const [, value] of Object.entries(data)) {
+          gun.get(value["#"]).once((d) => tempEmails.push(d))
+        }
 
-      console.log(tempEmails)
-      setEmails(tempEmails);
+        const filter = function(element) {
+          return element;
+        }
+        const filtered = tempEmails.filter(filter)
+        console.log("filtered", filtered)
+        console.log(tempEmails)
+        setEmails(tempEmails);
+      }
     }
 
     gun.get(inboxAddr).get("public").get("emails").once(callback, true)
